@@ -60,8 +60,46 @@ int database::userLogin(const std::string &name , const std::string &password){
         
         std::cout << "backName : " << backName << std::endl;
         std::cout << "backPass : " << backPass << std::endl;
-        return true;
+        sqlite3_close(db);
+        return 1;
+    }
+    sqlite3_close(db);
+    return 0;
+}
+
+int database::userRegister(const std::string &name , const std::string &password){
+    //sql sorgusu
+    //stmt nesnesi
+    //prepare
+    //sorgu bind
+    //step step isle
+
+    if(db == nullptr){
+        login_frame::errMessage(3,"db nullptr");
+        return -1;
     }
 
-    return false;
+    const char *sqlSorgu = "INSERT INTO users (name,password) VALUES (?,?);";
+
+    sqlite3_stmt *stmt;
+
+    if(sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr) != SQLITE_OK){
+        login_frame::errMessage(3,"prepare_v2");
+        sqlite3_close(db);
+        return -1;
+    }
+
+    //bind
+    sqlite3_bind_text(stmt,1,name.c_str(),-1,SQLITE_STATIC);
+    sqlite3_bind_text(stmt,2,password.c_str(),-1,SQLITE_STATIC);
+
+    //run
+    if(sqlite3_step(stmt) == SQLITE_OK){
+        wxMessageBox("BASARIYLA KAYIT OLDUNUZ !","KAYIT BILGISI", wxOK | wxICON_INFORMATION);
+        sqlite3_close(db);
+        return 1;
+    }
+
+    login_frame::errMessage(2,"KAYIT SIRASINDA PROBLEM YASANDI !");
+    sqlite3_close(db);
 }
