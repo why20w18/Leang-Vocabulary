@@ -31,7 +31,8 @@ enum leangConfigEnum{
     AUTO_UPDATE,
     LOGIN_GUI_ACTIVE,
     LEANG_GUI_ACTIVE,
-    LEANG_MENU_MIN_SIZE
+    LEANG_MENU_MIN_SIZE,
+    AUTO_BACKUP
 };
 
 
