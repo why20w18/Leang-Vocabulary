@@ -1,0 +1,3 @@
+/home/archw/packs/cpp/leang_1/build/CMakeFiles/LEANG_EXECUTABLE.dir
+/home/archw/packs/cpp/leang_1/build/CMakeFiles/edit_cache.dir
+/home/archw/packs/cpp/leang_1/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/LEANG_EXECUTABLE.dir/src/main.cpp.o CMakeFiles/LEANG_EXECUTABLE.dir/src/wx_gui.cpp.o CMakeFiles/LEANG_EXECUTABLE.dir/src/leang.cpp.o CMakeFiles/LEANG_EXECUTABLE.dir/src/database.cpp.o CMakeFiles/LEANG_EXECUTABLE.dir/src/konsol.cpp.o -o LEANG_EXECUTABLE  -lwx_gtk3u_core-3.2 -lwx_baseu-3.2 /usr/lib/libsqlite3.so
