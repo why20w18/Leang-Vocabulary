@@ -14,7 +14,8 @@ enum ID_ENUM_LEANG{
 
 //EVENT TABLE MAKROLARI - bunun yerine dinamik bind kullanilabilirdi
 wxBEGIN_EVENT_TABLE(login_frame,wxFrame)
-   EVT_BUTTON(ID_LoginSumbit,login_frame::OnLoginSumbitButton) //namespace
+   EVT_BUTTON(ID_LoginSumbit,login_frame::OnLoginSumbitButton) //func adres
+   EVT_BUTTON(ID_RegisterSumbit,login_frame::OnRegisterSumbitButton) 
    
 wxEND_EVENT_TABLE()
 
@@ -50,6 +51,8 @@ login_frame::login_frame(const wxString &tittle ,leangEngine &leTransfer)
    //108,281 = x,y
    //h:317..281 = 36 
    //w:108..242 = 134
+
+   buttonRegister = new wxButton(panel,ID_RegisterSumbit,"Register",wxPoint(150,350),wxSize(67,18));
 }
 
 void login_frame::OnLoginSumbitButton(wxCommandEvent &e){
@@ -59,7 +62,12 @@ void login_frame::OnLoginSumbitButton(wxCommandEvent &e){
 
    std::cout << "input_username : " << log_username << "\ninput_password : " << log_password << "\n";
    //veritabanina baglanti kuracagiz eger bilgiler dogrulanirsa le_framede yeni bir frame baslatacagiz LEANG | MENU olarak
-    
+   
+   if(log_username == "" || log_password == ""){
+      errMessage(1,"KULLANICI ADI YADA PAROLA BOS BIRAKILAMAZ !");
+      return;
+   }
+
     database db("../databaseDIR/leang.db");
 
     if (db.userLogin(log_username, log_password) == 1) {
@@ -72,9 +80,14 @@ void login_frame::OnLoginSumbitButton(wxCommandEvent &e){
 
     } 
     else {
-        errMessage(1, "TEKRAR DENEYIN !");
+        errMessage(1, "KAYITSIZ KULLANICI !");
          isLoginButtonDatabaseConnection = 0;
     }
+}
+
+void login_frame::OnRegisterSumbitButton(wxCommandEvent &e){
+
+      std::cout << "register" << std::endl;   
 }
 
 //private memberlari getter ile database logine yolla
@@ -109,17 +122,17 @@ void login_frame::errMessage(int hataTip,const std::string &m){
 
       switch(hataTip){
          case LOGIN_HATASI:{
-            wxMessageBox("KULLANICI ADI YADA PAROLA HATALIDIR !\n"+m,"LOGIN_HATASI",wxOK | wxICON_INFORMATION);
+            wxMessageBox("KULLANICI ADI YADA PAROLA PROBLEMI !\n\n"+m,"LOGIN_HATASI",wxOK | wxICON_INFORMATION);
             break;
          }
 
          case REGISTER_HATASI:{
-             wxMessageBox("KAYIT SIRASINDA HATA OLUSTU !\n"+m,"LOGIN_HATASI",wxOK | wxICON_INFORMATION);
+             wxMessageBox("KAYIT SIRASINDA HATA OLUSTU !\n\n"+m,"REGISTER_HATASI",wxOK | wxICON_INFORMATION);
             break;
          }
 
          case VERITABANI_HATASI:{
-             wxMessageBox("VERITABANI BAGLANTISI SAGLANAMADI !\n"+m,"VERITABANI_HATASI",wxOK | wxICON_INFORMATION);
+             wxMessageBox("VERITABANI BAGLANTISI SAGLANAMADI !\n\n"+m,"VERITABANI_HATASI",wxOK | wxICON_INFORMATION);
             break;
          }
       }
