@@ -20,6 +20,7 @@ public:
     //LOGIN=1,REGISTER=2,VERITABANI=3
     static void errMessage(int hataTip,const std::string &msg = "");
 
+//pencerelerin adini tittle olarak icindeki komponentlerle tut konsol kismi icin
 
 
 
@@ -35,12 +36,14 @@ private:
     wxTextCtrl *userPassword;
 
     wxButton *buttonGiris;
+    wxButton *buttonRegister;
 
     //GETTER SETTERLAR
     std::string getPencereTittle();
 
     //slotlar
     void OnLoginSumbitButton(wxCommandEvent &e); //login sumbit button
+    void OnRegisterSumbitButton(wxCommandEvent &e); //register sumbit button
 
     //makrolar isin icine buton girince event table
     wxDECLARE_EVENT_TABLE();
@@ -52,7 +55,7 @@ public:
     home_frame(const wxString &yeniPencere_Baslik);
 
 private:
-
+    
 };
 //tablo icindekiler makro olarak baslangic ve son arasina yazilir
 
