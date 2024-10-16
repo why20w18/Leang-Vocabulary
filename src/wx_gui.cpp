@@ -88,6 +88,28 @@ void login_frame::OnLoginSumbitButton(wxCommandEvent &e){
 void login_frame::OnRegisterSumbitButton(wxCommandEvent &e){
 
       std::cout << "register" << std::endl;   
+
+      this->reg_username = userName->GetValue();
+      this->reg_password = userPassword->GetValue();
+
+      if(reg_password == "" || reg_username == ""){
+         errMessage(3,"KAYIT ICIN KULLANICI ADI VE PAROLA GIRMELISINIZ !");
+         return;
+      }
+
+      database db("../databaseDIR/leang.db");
+      
+      int donus = db.userRegister(reg_username,reg_password);
+      std::cout << "donus : " << donus << std::endl;
+      
+      if(donus == 1){
+         wxMessageBox("BASARIYLA KAYIT OLDUNUZ\nGIRIS YAPABILIRSINIZ","KAYIT BILGISI", wxOK | wxICON_INFORMATION);
+         return;
+      }
+      else{
+         errMessage(2,"KAYIT SIRASINDA PROBLEM YASANDI !");
+         return;
+      }
 }
 
 //private memberlari getter ile database logine yolla

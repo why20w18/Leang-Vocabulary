@@ -94,12 +94,12 @@ int database::userRegister(const std::string &name , const std::string &password
     sqlite3_bind_text(stmt,2,password.c_str(),-1,SQLITE_STATIC);
 
     //run
-    if(sqlite3_step(stmt) == SQLITE_OK){
-        wxMessageBox("BASARIYLA KAYIT OLDUNUZ !","KAYIT BILGISI", wxOK | wxICON_INFORMATION);
+    //DONE 101 DEFINE , if STEP IS SUCCESFUL
+    if(sqlite3_step(stmt) == SQLITE_DONE){
         sqlite3_close(db);
         return 1;
     }
 
-    login_frame::errMessage(2,"KAYIT SIRASINDA PROBLEM YASANDI !");
+    return 0;
     sqlite3_close(db);
 }
