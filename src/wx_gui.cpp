@@ -7,7 +7,7 @@
 int login_frame::isLoginButtonDatabaseConnection = 0;
 
 
-enum ID_ENUM_LEANG{
+enum ID_ENUM_LOGIN{
    ID_LoginSumbit = 1,
    ID_RegisterSumbit
 };
@@ -52,7 +52,7 @@ login_frame::login_frame(const wxString &tittle ,leangEngine &leTransfer)
    //h:317..281 = 36 
    //w:108..242 = 134
 
-   buttonRegister = new wxButton(panel,ID_RegisterSumbit,"Register",wxPoint(150,350),wxSize(67,18));
+   buttonRegister = new wxButton(panel,ID_RegisterSumbit,"Register",wxPoint(146,320),wxSize(80,25));
 }
 
 void login_frame::OnLoginSumbitButton(wxCommandEvent &e){
@@ -75,7 +75,7 @@ void login_frame::OnLoginSumbitButton(wxCommandEvent &e){
         this->Close();
         isLoginButtonDatabaseConnection = 1;
 
-         home_frame *mainMenu = new home_frame("LEANG | HOME");
+         home_frame *mainMenu = new home_frame("LEANG | HOME | USER: "+getLogUsername());
          mainMenu->Show(true);
 
     } 
@@ -161,14 +161,37 @@ void login_frame::errMessage(int hataTip,const std::string &m){
    }
 }
 
-/////////////////////////////////////////////HOME_FRAME_CLASS///////////////////////////////////////////////////
+/////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 
+enum ID_ENUM_HOME{
+    ID_SETTINGS_OZELLESTIRME = 11,
+    ID_SETTINGS_BILDIRIM,
+    ID_SETTINGS_PROGRAMDILI,
+    ID_SUPPORT_GITHUB,
+    ID_LEANG_KELIMETABANI,
+    ID_LEANG_ISTEKDIL,
+    ID_LEANG_KULLANICINOTLARI,
+    ID_LEANG_KELIMESETLERI,
+    ID_LEANG_EXPORT,
+    ID_LEANG_IMPORT
+};
+
+wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
+   //EVT_MENU()
+wxEND_EVENT_TABLE()
 
 home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,wxDefaultPosition)
 {  
    std::cout << "HOME PENCERESI BASLATILDI !\n"; 
    SetMinSize(wxSize(750,500));
    SetMaxSize(wxSize(1000,750));
+
+   //gui elemanlarini nesne ile beraber baslatma
+   menuSettings = new wxMenu;
+   //menuSettings->Append()
+
 }
 
 
