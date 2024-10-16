@@ -169,7 +169,10 @@ enum ID_ENUM_HOME{
     ID_SETTINGS_OZELLESTIRME = 11,
     ID_SETTINGS_BILDIRIM,
     ID_SETTINGS_PROGRAMDILI,
+    ID_SETTINGS_PROFIL,
+
     ID_SUPPORT_GITHUB,
+    
     ID_LEANG_KELIMETABANI,
     ID_LEANG_ISTEKDIL,
     ID_LEANG_KULLANICINOTLARI,
@@ -188,9 +191,64 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    SetMinSize(wxSize(750,500));
    SetMaxSize(wxSize(1000,750));
 
+   //ayri bir dosyada program icinde gecen metinlerin ingilizcesi ve almancasi yer alacak menu metinleri
+   //istek dile gore oradan cekilecek 3.parametre olarak simdilik statik olarak ayarlandi
+   
    //gui elemanlarini nesne ile beraber baslatma
    menuSettings = new wxMenu;
-   //menuSettings->Append()
+   menuSupport = new wxMenu;
+   menuLeang = new wxMenu;
+
+////////////////////////MENU_SETTINGS
+   menuSettings->Append(ID_SETTINGS_OZELLESTIRME,"&Ozellestirme (Preferences)\tCTRL+P","pencere boyutu , gui aktifligi vs. ayarlari");
+   menuSettings->AppendSeparator();
+   
+   menuSettings->Append(ID_SETTINGS_BILDIRIM,"&Bildirimler (Repeat)\tCTRL+R","leang'in size bildirim gonderme sikligini ayarlayin");
+   menuSettings->AppendSeparator();
+
+
+   menuSettings->Append(ID_SETTINGS_PROGRAMDILI,"&Program Dili (Language)\tCTRL+L","programi istediginiz dilde kullanin");
+   menuSettings->AppendSeparator();
+
+   menuSettings->Append(ID_SETTINGS_PROFIL,"&Profil (Me)\tCTRL+M","kullanici adi , parola degisimi , hesap silme");
+
+   menuBarHome = new wxMenuBar();
+////////////////////////MENU_SETTINGS
+
+
+////////////////////////MENU_SUPPORT
+   menuSupport->Append(ID_SUPPORT_GITHUB,"&Github\tCTRL+G","leang'a projesine katkida bulunun");
+////////////////////////MENU_SUPPORT
+
+
+
+////////////////////////MENU_LEANG
+   menuLeang->Append(ID_LEANG_KELIMETABANI,"&Kelime Tabani","tum kullanicilarin tum calisma kelimeleri");
+   menuLeang->AppendSeparator();
+
+   menuLeang->Append(ID_LEANG_KELIMESETLERI,"&Kelime Setleri","olusturdugunuz kategorik kelime setlerini inceleyin");
+   menuLeang->AppendSeparator();
+
+   menuLeang->Append(ID_LEANG_ISTEKDIL,"&Istek Diller","uzerine calismak istediginiz dilleri ekleyin");
+   menuLeang->AppendSeparator();
+
+
+   menuLeang->Append(ID_LEANG_IMPORT,"&Import","Leang icin baskasinin olusturdugu kelime setini ekleyin");
+   menuLeang->AppendSeparator();
+
+   menuLeang->Append(ID_LEANG_EXPORT,"&Export","Leang icin kendi kelime setinizi disari aktarip paylasin");
+   menuLeang->AppendSeparator();
+
+   menuLeang->Append(ID_LEANG_KULLANICINOTLARI,"&Notlarim\tCTRL+N","ilerlemeni kaydetmek icin not uygulamasi");
+////////////////////////MENU_LEANG
+
+
+   menuBarHome->Append(menuSettings,"&Settings");
+   menuBarHome->Append(menuSupport,"&Support");
+   menuBarHome->Append(menuLeang,"&Leang");
+
+   SetMenuBar(menuBarHome);
+   CreateStatusBar();
 
 }
 
