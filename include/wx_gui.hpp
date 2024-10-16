@@ -42,11 +42,13 @@ private:
 
     std::string reg_username;
     std::string reg_password;
-    
+
+    std::string leangVersion;    
 
     //gui elemanlari
     wxTextCtrl *userName;
     wxTextCtrl *userPassword;
+
 
     wxButton *buttonGiris;
     wxButton *buttonRegister;
