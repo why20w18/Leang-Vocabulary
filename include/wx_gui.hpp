@@ -9,8 +9,13 @@
 class login_frame : public wxFrame{
 public:
     login_frame(const wxString &tittle,leangEngine &leTransfer);
+    //~login_frame();
+    
     std::string& getLogUsername();
     std::string& getLogPassword();
+
+//composition implementation //
+//database *db;
 
 
 //STATIC
@@ -30,6 +35,10 @@ private:
     //guiden cekilecek veriler
     std::string log_username;
     std::string log_password;
+
+    std::string reg_username;
+    std::string reg_password;
+    
 
     //gui elemanlari
     wxTextCtrl *userName;
