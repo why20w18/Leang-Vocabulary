@@ -24,6 +24,7 @@ login_frame::login_frame(const wxString &tittle ,leangEngine &leTransfer)
 : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
 {  
    this->mevcutPencereTittle = tittle;
+   this->leangVersion = "0.1";
 
    //CONFIG KONSOL INFO
    std::cout << "MIN_SIZE=" << leTransfer.minSizeArr[0] << "," << leTransfer.minSizeArr[1] << std::endl; 
@@ -53,6 +54,8 @@ login_frame::login_frame(const wxString &tittle ,leangEngine &leTransfer)
    //w:108..242 = 134
 
    buttonRegister = new wxButton(panel,ID_RegisterSumbit,"Register",wxPoint(146,320),wxSize(80,25));
+
+   wxStaticText *leangVersionLabel = new wxStaticText(panel,wxID_ANY,"Leang Version : "+this->leangVersion,wxPoint(130,370));
 }
 
 void login_frame::OnLoginSumbitButton(wxCommandEvent &e){
