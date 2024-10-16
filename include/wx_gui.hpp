@@ -59,7 +59,7 @@ private:
     //slotlar
     void OnLoginSumbitButton(wxCommandEvent &e); //login sumbit button
     void OnRegisterSumbitButton(wxCommandEvent &e); //register sumbit button
-
+    
     //makrolar isin icine buton girince event table
     wxDECLARE_EVENT_TABLE();
     //tablo icindekiler makro olarak baslangic ve son arasina yazilir
@@ -85,7 +85,7 @@ private:
     wxMenu *menuSupport;  //support : github contributes
     wxMenu *menuLeang;    //leang   : kelime_tabani , ogrenilmek_istenen_diller , kelime_setleri , export , import , user_notes
     
-    //slotlar
+    //SLOTLAR-MENU SLOTLARI
     void slotSettingsOzellestirme(wxCommandEvent &e);
     void slotSettingsBildirim(wxCommandEvent &e);
     void slotSettingsProgramDili(wxCommandEvent &e);
@@ -99,6 +99,8 @@ private:
     void slotLeangKelimeSetleri(wxCommandEvent &e);
     void slotLeangExport(wxCommandEvent &e);
     void slotLeangImport(wxCommandEvent &e);
+
+    //SLOTLAR-KOMPONENT SLOTLARI (LEANG MOTORUNDAN GELECEK)
 
 
     //home_frame'ye ozel event_table deklerasyonu
