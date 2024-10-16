@@ -6,6 +6,10 @@
 #include "leang.hpp"
 #include "database.hpp"
 
+///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
+///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
+///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
+
 class login_frame : public wxFrame{
 public:
     login_frame(const wxString &tittle,leangEngine &leTransfer);
@@ -56,16 +60,47 @@ private:
 
     //makrolar isin icine buton girince event table
     wxDECLARE_EVENT_TABLE();
+    //tablo icindekiler makro olarak baslangic ve son arasina yazilir
 };
 
-class home_frame : public wxFrame{
+
+
+///////////////////////////////////////////////HOME_FRAME_CLASS//////////////////////////////////////////////////
+///////////////////////////////////////////////HOME_FRAME_CLASS//////////////////////////////////////////////////
+///////////////////////////////////////////////HOME_FRAME_CLASS//////////////////////////////////////////////////
+
+class home_frame : public wxFrame , public leangEngine{
 public:
     //constructor ve wxframeden turedigi icin o classinda constructorini baslatma 
     home_frame(const wxString &yeniPencere_Baslik);
 
 private:
+
+//GUI BILESENLERI HOME_FRAME
+    wxMenuBar *menuBarHome;
+
+    wxMenu *menuSettings; //settings: ozellestirme , bildirim , program_dili
+    wxMenu *menuSupport;  //support : github contributes
+    wxMenu *menuLeang;    //leang   : kelime_tabani , ogrenilmek_istenen_diller , kelime_setleri , export , import , user_notes
     
+    //slotlar
+    void slotSettingsOzellestirme(wxCommandEvent &e);
+    void slotSettingsBildirim(wxCommandEvent &e);
+    void slotSettingsProgramDili(wxCommandEvent &e);
+
+    void slotSupportGithub(wxCommandEvent &e);
+    
+    void slotLeangKelimeTabani(wxCommandEvent &e);
+    void slotLeangIstekDil(wxCommandEvent &e);
+    void slotLeangKullaniciNotlari(wxCommandEvent &e);
+    
+    void slotLeangKelimeSetleri(wxCommandEvent &e);
+    void slotLeangExport(wxCommandEvent &e);
+    void slotLeangImport(wxCommandEvent &e);
+
+
+    //home_frame'ye ozel event_table deklerasyonu
+    wxDECLARE_EVENT_TABLE();
 };
-//tablo icindekiler makro olarak baslangic ve son arasina yazilir
 
 #endif 
