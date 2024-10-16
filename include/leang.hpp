@@ -12,11 +12,15 @@ public:
     static bool leangGuiActive;
 
 
+protected: //sadece home_frameden erisilecek kisimlar == PROGRAMIN ILERLEYEN KISMINDA INTERFACE OLACAK
+
+    virtual void addWord(const std::string &dil_1 , const std::string &dil_2);
+    virtual void getWord(const std::string &istenenDil);
+    virtual int randomizeWord(int database_record_count);
+
 private:
-    void addWord(const std::string &dil_1 , const std::string &dil_2);
-    void getWord(const std::string &istenenDil);
-    int randomizeWord(int database_record_count);
     void leangConfig(const std::string &configPath);
+
 };
 
 
