@@ -39,6 +39,7 @@ public:
 
 private:
     std::string databasePath;
+    void databasePasswordCrypter();
 };
 
 #endif
