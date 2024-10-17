@@ -2,15 +2,17 @@
 #include "../include/database.hpp"
 #include "../include/wx_gui.hpp"
 
-
 database::database(const std::string &databasePath){
     this->databasePath = databasePath;
     databaseBaglantiBaslat();
+    getRecordCount();
 }
 
 database::~database(){
     
 }
+
+
 
 void database::databaseBaglantiBaslat(){
     int db_status = sqlite3_open(databasePath.c_str(),&db);
@@ -20,6 +22,9 @@ void database::databaseBaglantiBaslat(){
     }
     std::cout << "VERITABANI BASLATILDI\n";
 }
+
+
+
 
 int database::userLogin(const std::string &name , const std::string &password){
     //databaseBaglantiBaslat();
@@ -67,6 +72,9 @@ int database::userLogin(const std::string &name , const std::string &password){
     return 0;
 }
 
+
+
+
 int database::userRegister(const std::string &name , const std::string &password){
     //sql sorgusu
     //stmt nesnesi
@@ -102,4 +110,21 @@ int database::userRegister(const std::string &name , const std::string &password
 
     return 0;
     sqlite3_close(db);
+}
+
+
+//statiklestirilecek ilerleyen zamanda
+int database::getRecordCount(){
+    const char *sqlSorgu = "SELECT COUNT (*) FROM leangWords;";
+    sqlite3_stmt *stmt;
+    if(sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr) != SQLITE_OK){
+        login_frame::errMessage(3,"prepare_v2");
+        sqlite3_close(db);
+        return -1;
+    }
+
+    if(sqlite3_step(stmt) == SQLITE_ROW){
+        this->databaseCount = sqlite3_column_int(stmt,0);
+    }
+    return databaseCount;
 }
