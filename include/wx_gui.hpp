@@ -2,6 +2,9 @@
 #ifndef __WX_GUI_HPP__
 #define __WX_GUI_HPP__
 
+#include <cstdlib>
+#include <ctime>
+
 #include <wx-3.2/wx/wx.h>
 #include "leang.hpp"
 #include "database.hpp"
@@ -12,7 +15,7 @@
 
 class login_frame : public wxFrame{
 public:
-    login_frame(const wxString &tittle,leangEngine &leTransfer);
+    login_frame(const wxString &tittle);
     //~login_frame();
     
     std::string& getLogUsername();
@@ -86,6 +89,32 @@ private:
     wxMenu *menuLeang;    //leang   : kelime_tabani , ogrenilmek_istenen_diller , kelime_setleri , export , import , user_notes
     
     wxButton *leang_baslat; //leang.cpp'ye bagli fonksiyonlari calistirmali
+    
+    wxButton *sorulanKelime;
+    wxButton *istenenKelime_1;
+    wxButton *istenenKelime_2;
+    wxButton *istenenKelime_3;
+    wxButton *istenenKelime_4;
+
+
+
+//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
+//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
+//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
+    void addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 , const std::string &kelime1_anlam) override;
+    void getWord(const std::string &istenenDil , int istenenID) override;
+    int randomizeID(int database_record_count) override;
+    std::string& getRandomWord() override;
+//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
+//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
+//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
+
+
+
+
+
+    //SLOTLAR HOME_FRAME KOMPONENT SLOTLARI
+    void slotHomeFrameBaslatButton(wxCommandEvent &e);
 
 
     //SLOTLAR-MENU SLOTLARI
