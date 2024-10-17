@@ -7,6 +7,8 @@
 
 class database{
 public:
+    int databaseCount = 0;
+
     //CONSTRUCTOR VE DESTRUCTORLAR
     database(const std::string &databasePath);
     ~database();
