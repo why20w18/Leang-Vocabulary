@@ -4,28 +4,11 @@
 #include <fstream>
 #include <string>
 
-
 //STATIK DEFINE
 bool leangEngine::loginGuiActive = -1;
 bool leangEngine::leangGuiActive = -1;
 
-
-leangEngine::leangEngine(){
-    //constructor icinde config okumasi yapiyor
-    leangConfig("../config.txt");
-}
-
-void leangEngine::addWord(const std::string &dil_1 , const std::string &dil_2){
-
-}
-
-void leangEngine::getWord(const std::string &istenenDil){
-
-}
-
-int leangEngine::randomizeWord(int database_record_count){
-
-}
+int leangEngine::minSizeArr[2] = {450,450};
 
 enum leangConfigEnum{
     LOGIN_MIN_SIZE=1,
@@ -67,8 +50,8 @@ void leangEngine::leangConfig(const std::string &configPath){
                     std::string x = command.substr(0, commaPos);
                     std::string y = command.substr(commaPos + 1);
                 
-                    this->minSizeArr[0] = std::stoi(x);
-                    this->minSizeArr[1] = std::stoi(y);
+                    minSizeArr[0] = std::stoi(x);
+                    minSizeArr[1] = std::stoi(y);
                 }
                 break;
             }
@@ -83,9 +66,9 @@ void leangEngine::leangConfig(const std::string &configPath){
                     c = tolower(c);
                 }
 
-                (isGuiActive == "true") ? this->loginGuiActive=true :
-                (isGuiActive == "false") ? this->loginGuiActive=false:
-                this->loginGuiActive = false;
+                (isGuiActive == "true") ? loginGuiActive=true :
+                (isGuiActive == "false") ? loginGuiActive=false:
+                loginGuiActive = false;
                 
                 break;
             }
