@@ -12,12 +12,12 @@ class le_app : public wxApp{
 public:
     bool OnInit() override{
         database db("../databaseDIR/leang.db");
-        leangEngine le;
+        //leangEngine le;
         
         //gui aktif degilse baslatilmasin
         if(leangEngine::loginGuiActive){
         
-        login_frame *login = new login_frame("LEANG | LOGIN",le);
+        login_frame *login = new login_frame("LEANG | LOGIN");
         login->Show(leangEngine::loginGuiActive);
         
 
