@@ -23,6 +23,7 @@ wxEND_EVENT_TABLE()
 login_frame::login_frame(const wxString &tittle ,leangEngine &leTransfer) 
 : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
 {  
+   CenterOnScreen();
    this->mevcutPencereTittle = tittle;
    this->leangVersion = "0.1";
 
@@ -183,7 +184,7 @@ void login_frame::errMessage(int hataTip,const std::string &m){
 /////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 
 enum ID_ENUM_HOME{
-    ID_SETTINGS_OZELLESTIRME = 11,
+    ID_SETTINGS_OZELLESTIRME = 608,
     ID_SETTINGS_BILDIRIM,
     ID_SETTINGS_PROGRAMDILI,
     ID_SETTINGS_PROFIL,
@@ -195,15 +196,19 @@ enum ID_ENUM_HOME{
     ID_LEANG_KULLANICINOTLARI,
     ID_LEANG_KELIMESETLERI,
     ID_LEANG_EXPORT,
-    ID_LEANG_IMPORT
+    ID_LEANG_IMPORT,
+
+    ID_LEANG_BASLAT_BUTTON
 };
 
 wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_SUPPORT_GITHUB,home_frame::slotSupportGithub)
+   EVT_MENU(ID_SETTINGS_OZELLESTIRME,home_frame::slotSettingsTercihler)
 wxEND_EVENT_TABLE()
 
 home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,wxDefaultPosition)
 {  
+   CenterOnScreen();
    std::cout << "HOME PENCERESI BASLATILDI !\n"; 
    SetMinSize(wxSize(750,500));
    SetMaxSize(wxSize(1000,750));
@@ -212,9 +217,20 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    //istek dile gore oradan cekilecek 3.parametre olarak simdilik statik olarak ayarlandi
    
    //gui elemanlarini nesne ile beraber baslatma
+   wxPanel* panel = new wxPanel(this);
+
    menuSettings = new wxMenu;
    menuSupport = new wxMenu;
    menuLeang = new wxMenu;
+   leang_baslat = new wxButton(panel,ID_LEANG_BASLAT_BUTTON,"LEANG BASLAT",wxPoint(575,5),wxSize(150,25));
+
+
+   wxBoxSizer* sizer_x = new wxBoxSizer(wxVERTICAL); //dinamik olcekleme
+   
+   sizer_x->Add(leang_baslat , wxRIGHT | wxEXPAND , 25);
+   panel->SetSizer(sizer_x);
+   panel->Layout();
+   this->Layout();
 
 ////////////////////////MENU_SETTINGS
    menuSettings->Append(ID_SETTINGS_OZELLESTIRME,"&Ozellestirme (Preferences)\tCTRL+P","pencere boyutu , gui aktifligi vs. ayarlari");
@@ -267,24 +283,40 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    SetMenuBar(menuBarHome);
    CreateStatusBar();
 
+
+
+
+
+
+}//HOME_FRAME_CONSTRUCTOR
+
+
+////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
+
+void home_frame::slotSettingsTercihler(wxCommandEvent &e){
+   //home_frame *settings = new home_frame("SETTINGS | Ozellestirme");
+
+      if(!settings_frame::pencereAcikMi){
+      settings_frame *settings = new settings_frame("SETTINGS | Tercihler",1);
+      settings->Show(true);
+      }
+      else 
+      wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
+
+
+      std::cout << "settings baslatildi" << std::endl;
 }
-
-
-////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
-////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
-////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
-////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
-////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
-
-
-void home_frame::slotSettingsOzellestirme(wxCommandEvent &e){}
 void home_frame::slotSettingsBildirim(wxCommandEvent &e){}
 void home_frame::slotSettingsProgramDili(wxCommandEvent &e){}
 
 void home_frame::slotSupportGithub(wxCommandEvent &e){
    //mesaj kutusunu ortalayarak cikarttik
    wxMessageDialog(this,"https://github.com/why20w18/Leang-Vocabulary\n\
-   ADRESINDEN KATKIDA BULUNABILIR PROGRAMDAKI BUGLARI BILDIREBILIRSIN","Support-Github",wxOK | wxCENTRE).ShowModal();
+ADRESINDEN KATKIDA BULUNABILIR PROGRAMDAKI BUGLARI BILDIREBILIRSIN","Support-Github",wxOK | wxCENTRE).ShowModal();
 }
     
 void home_frame::slotLeangKelimeTabani(wxCommandEvent &e){}
@@ -294,3 +326,45 @@ void home_frame::slotLeangKullaniciNotlari(wxCommandEvent &e){}
 void home_frame::slotLeangKelimeSetleri(wxCommandEvent &e){}
 void home_frame::slotLeangExport(wxCommandEvent &e){}
 void home_frame::slotLeangImport(wxCommandEvent &e){}
+
+
+
+//////////////////////////////////////////////////////
+bool settings_frame::pencereAcikMi = false;
+
+settings_frame::settings_frame(const wxString &tittle , int altPencereNo)
+ : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
+{     
+      //settings_frame construct edildiyse pencere baslamistir
+      this->pencereAcikMi = true;
+
+      std::cout << "settings_frame initalize"<< "- alt pencere no : " << altPencereNo << std::endl;
+      
+      //yatay sekilde tutulacak sizer olabilirse kullanilacak
+      SetMinSize(wxSize(500,250));
+      SetMaxSize(wxSize(500,250));
+      CentreOnScreen();
+
+
+      //bu pencerenin kapanma sinyalini tutacagiz kapandiysa static degiskeni false cekecegiz
+      this->Bind(wxEVT_CLOSE_WINDOW,&settings_frame::OnSettingsClose,this);
+
+      //gui bilesenlerini baslatma
+      checkBox_autoUpdate = new wxCheckBox(this,wxID_ANY,"Otomatik Guncelleme",wxPoint(15,40),wxDefaultSize);
+      checkBox_loginGuiActive = new wxCheckBox(this,wxID_ANY,"Login Grafik Aktifligi",wxPoint(15,80),wxDefaultSize);
+      checkBox_homeGuiActive = new wxCheckBox(this,wxID_ANY,"Home Grafik Aktifligi",wxPoint(15,120),wxDefaultSize);
+
+      wxStaticText *label_logsize = new wxStaticText(this,wxID_ANY,"LOGIN GUI AKTIFLIGI:",wxPoint(225,67),wxDefaultSize);
+      textCTRL_loginSize = new wxTextCtrl(this,wxID_ANY,"",wxPoint(380,60),wxSize(100,40));
+
+      wxStaticText *label_homesize = new wxStaticText(this,wxID_ANY,"HOME GUI AKTIFLIGI:",wxPoint(225,127),wxDefaultSize);
+      textCTRL_homeSize = new wxTextCtrl(this,wxID_ANY,"",wxPoint(380,120),wxSize(100,40));
+
+      button_kaydetTercih = new wxButton(this,wxID_ANY,"KAYDET",wxPoint(395,15),wxSize(75,25)); 
+}
+
+
+void  settings_frame::OnSettingsClose(wxCloseEvent &e){
+   this->pencereAcikMi = false;
+   e.Skip();
+}

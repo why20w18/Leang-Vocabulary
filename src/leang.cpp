@@ -11,6 +11,7 @@ bool leangEngine::leangGuiActive = -1;
 
 
 leangEngine::leangEngine(){
+    //constructor icinde config okumasi yapiyor
     leangConfig("../config.txt");
 }
 
