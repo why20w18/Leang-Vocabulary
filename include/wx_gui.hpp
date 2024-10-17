@@ -6,8 +6,11 @@
 #include <ctime>
 
 #include <wx-3.2/wx/wx.h>
+#include <wx/generic/calctrlg.h>
+
 #include "leang.hpp"
 #include "database.hpp"
+
 
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
@@ -96,7 +99,11 @@ private:
     wxButton *istenenKelime_3;
     wxButton *istenenKelime_4;
 
-
+    std::string str_sorulanKelime;
+    std::string str_istenenKelime_1;
+    std::string str_istenenKelime_2;
+    std::string str_istenenKelime_3;
+    std::string str_istenenKelime_4;
 
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
@@ -127,7 +134,7 @@ private:
     
     
     void slotLeangKelimeTabani(wxCommandEvent &e);
-    void slotLeangIstekDil(wxCommandEvent &e);
+    void slotLeangBaslatici(wxCommandEvent &e);
     void slotLeangKullaniciNotlari(wxCommandEvent &e);
     void slotLeangKelimeSetleri(wxCommandEvent &e);
     void slotLeangExport(wxCommandEvent &e);
@@ -142,7 +149,31 @@ protected:
     wxDECLARE_EVENT_TABLE();
 };
 
-//MENU PENCERELERI
+
+
+
+
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+/////////////////////////////////////////////////MENU PENCERELERI
+
+
+
+
+
 ///////////////////////////////////////////////settings_CLASS-SETTINGS//////////////////////////////////////////////////
 ///////////////////////////////////////////////settings_CLASS-SETTINGS//////////////////////////////////////////////////
 ///////////////////////////////////////////////settings_CLASS-SETTINGS//////////////////////////////////////////////////
@@ -152,8 +183,7 @@ public:
     static bool pencereAcikMi;
     
     //alt pencere 1'den baslar bir menuBar icinde kac adet menu varsa oraya kadar gider
-    settings_frame(const wxString &tittle , int altPencereNo);
-    int getAltPencereNo();
+    settings_frame(const wxString &tittle);
 
 private:
 
@@ -173,15 +203,35 @@ private:
     wxButton *button_kaydetTercih;
 
     //PREFERENCES-SLOTLAR//
-    
-
+    //SLOTLAR BURAYA    
+    //YAZILACAK
     //PREFERENCES-SLOTLAR//
 
 ////TERCIHLER = PREFERENCES////
 
-    void  OnSettingsClose(wxCloseEvent &e);
 
+    void  OnSettingsClose(wxCloseEvent &e);
 };
 
+
+///////////////////////////////////////////////leang_CLASS-SETTINGS//////////////////////////////////////////////////
+///////////////////////////////////////////////leang_CLASS-SETTINGS//////////////////////////////////////////////////
+///////////////////////////////////////////////leang_CLASS-SETTINGS//////////////////////////////////////////////////
+class leang_frame : public wxFrame{
+public:
+    leang_frame(const wxString &tittle);
+
+private:
+    
+/*
+1-KELIME TABANI
+2-KELIME SETLERI
+3-BASLATICI
+4-IMPORT
+5-EXPORT
+6-KULLANICI NOTLARI
+*/
+
+};
 
 #endif 
