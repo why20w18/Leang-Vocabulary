@@ -210,14 +210,17 @@ enum ID_ENUM_HOME{
     ID_SUPPORT_GITHUB,
     
     ID_LEANG_KELIMETABANI,
-    ID_LEANG_ISTEKDIL,
+    ID_LEANG_BASLATICI,
     ID_LEANG_KULLANICINOTLARI,
     ID_LEANG_KELIMESETLERI,
     ID_LEANG_EXPORT,
     ID_LEANG_IMPORT,
 
     ID_LEANG_BASLAT_BUTTON,
+    ID_LEANG_DURDUR_BUTTON,
+    
     ID_LEANG_SORULAN_BUTTON,
+
     ID_LEANG_ISTENEN_1_BUTTON,
     ID_LEANG_ISTENEN_2_BUTTON,
     ID_LEANG_ISTENEN_3_BUTTON,
@@ -226,7 +229,11 @@ enum ID_ENUM_HOME{
 
 wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_SUPPORT_GITHUB,home_frame::slotSupportGithub)
+  
    EVT_MENU(ID_SETTINGS_OZELLESTIRME,home_frame::slotSettingsTercihler)
+  
+   EVT_MENU(ID_LEANG_BASLATICI,home_frame::slotLeangBaslatici)
+  
    EVT_BUTTON(ID_LEANG_BASLAT_BUTTON,home_frame::slotHomeFrameBaslatButton)
 wxEND_EVENT_TABLE()
 
@@ -234,8 +241,8 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
 {  
    CenterOnScreen();
    std::cout << "HOME PENCERESI BASLATILDI !\n"; 
-   SetMinSize(wxSize(750,500));
-   SetMaxSize(wxSize(1000,750));
+   SetMinSize(wxSize(750,520));
+   SetMaxSize(wxSize(750,520));
 
    //ayri bir dosyada program icinde gecen metinlerin ingilizcesi ve almancasi yer alacak menu metinleri
    //istek dile gore oradan cekilecek 3.parametre olarak simdilik statik olarak ayarlandi
@@ -247,15 +254,18 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    menuSupport = new wxMenu;
    menuLeang = new wxMenu;
 
-   //sorulanKelime = new wxButton(panel,ID_LEANG_ISTEKDIL,);
+   sorulanKelime = new wxButton(panel,ID_LEANG_SORULAN_BUTTON,"SORULACAK_KELIME",wxPoint(25,50),wxSize(450,350));
+   sorulanKelime->Enable(false);
+
+   leang_baslat = new wxButton(panel,ID_LEANG_BASLAT_BUTTON,"LEANG BASLAT",wxPoint(575,5),wxSize(120,50));
+   leang_baslat = new wxButton(panel,ID_LEANG_DURDUR_BUTTON,"LEANG DURDUR",wxPoint(575,75),wxSize(120,50));
 
 
-   leang_baslat = new wxButton(panel,ID_LEANG_BASLAT_BUTTON,"LEANG BASLAT",wxPoint(575,5),wxSize(80,45));
 
-   wxBoxSizer* sizerBox = new wxBoxSizer(wxHORIZONTAL); //dinamik olcekleme
-   
-   sizerBox->Add(leang_baslat,1 , wxLEFT | wxRIGHT  , 250);
-   panel->SetSizer(sizerBox);
+   istenenKelime_1 = new wxButton(panel,ID_LEANG_ISTENEN_1_BUTTON,this->str_istenenKelime_1,wxPoint(575,150),wxSize(150,50));
+   istenenKelime_2 = new wxButton(panel,ID_LEANG_ISTENEN_2_BUTTON,this->str_istenenKelime_2,wxPoint(575,220),wxSize(150,50));
+   istenenKelime_3 = new wxButton(panel,ID_LEANG_ISTENEN_3_BUTTON,this->str_istenenKelime_3,wxPoint(575,290),wxSize(150,50));
+   istenenKelime_4 = new wxButton(panel,ID_LEANG_ISTENEN_4_BUTTON,this->str_istenenKelime_4,wxPoint(575,360),wxSize(150,50));
 
 
 
@@ -289,7 +299,7 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    menuLeang->Append(ID_LEANG_KELIMESETLERI,"&Kelime Setleri","olusturdugunuz kategorik kelime setlerini inceleyin");
    menuLeang->AppendSeparator();
 
-   menuLeang->Append(ID_LEANG_ISTEKDIL,"&Istek Diller","uzerine calismak istediginiz dilleri ekleyin");
+   menuLeang->Append(ID_LEANG_BASLATICI,"&Baslatici\tCTRL+S","uzerine calismak istediginiz dilleri , kelimeleri ve fazlasini ayarlayin");
    menuLeang->AppendSeparator();
 
 
@@ -325,9 +335,8 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
 void home_frame::addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 , const std::string &kelime1_anlam){
 
 }
-
 void home_frame::getWord(const std::string &istenenDil , int istenenID){
-
+   
 }
 
 
@@ -360,6 +369,8 @@ std::string& home_frame::getRandomWord(){}
 void home_frame::slotHomeFrameBaslatButton(wxCommandEvent &e){
 
    std::cout << "buton tiklandi" << std::endl;
+
+   istenenKelime_1->SetLabel("hello");
 }
 
 
@@ -368,8 +379,8 @@ void home_frame::slotSettingsTercihler(wxCommandEvent &e){
    //home_frame *settings = new home_frame("SETTINGS | Ozellestirme");
 
       if(!settings_frame::pencereAcikMi){
-      settings_frame *settings = new settings_frame("SETTINGS | Tercihler",1);
-      settings->Show(true);
+      settings_frame *settings_frame_tercihler = new settings_frame("SETTINGS | Tercihler");
+      settings_frame_tercihler->Show(true);
       }
       else 
       wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
@@ -386,8 +397,25 @@ void home_frame::slotSupportGithub(wxCommandEvent &e){
 ADRESINDEN KATKIDA BULUNABILIR PROGRAMDAKI BUGLARI BILDIREBILIRSIN","Support-Github",wxOK | wxCENTRE).ShowModal();
 }
     
-void home_frame::slotLeangKelimeTabani(wxCommandEvent &e){}
-void home_frame::slotLeangIstekDil(wxCommandEvent &e){}
+void home_frame::slotLeangKelimeTabani(wxCommandEvent &e){
+
+}
+
+void home_frame::slotLeangBaslatici(wxCommandEvent &e){
+
+   if(!settings_frame::pencereAcikMi){
+   leang_frame *leang_frame_baslatici = new leang_frame("LEANG | Baslatici");
+   leang_frame_baslatici->Show(true);
+      }
+      else 
+      wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
+
+
+
+   
+
+}
+
 void home_frame::slotLeangKullaniciNotlari(wxCommandEvent &e){}
     
 void home_frame::slotLeangKelimeSetleri(wxCommandEvent &e){}
@@ -417,16 +445,15 @@ void home_frame::slotLeangImport(wxCommandEvent &e){}
 /////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 
-
 bool settings_frame::pencereAcikMi = false;
 
-settings_frame::settings_frame(const wxString &tittle , int altPencereNo)
+settings_frame::settings_frame(const wxString &tittle)
  : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
 {     
       //settings_frame construct edildiyse pencere baslamistir
       this->pencereAcikMi = true;
 
-      std::cout << "settings_frame initalize"<< "- alt pencere no : " << altPencereNo << std::endl;
+      std::cout << "settings_frame initalize" << std::endl;
       
       //yatay sekilde tutulacak sizer olabilirse kullanilacak
       SetMinSize(wxSize(500,250));
@@ -456,3 +483,36 @@ void  settings_frame::OnSettingsClose(wxCloseEvent &e){
    this->pencereAcikMi = false;
    e.Skip();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+
+leang_frame::leang_frame(const wxString &tittle) 
+: wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition,wxSize(500,250))
+{  
+   settings_frame::pencereAcikMi = true;
+   SetMaxSize(wxSize(500,250));
+   SetMinSize(wxSize(500,250));
+   this->CenterOnScreen();
+
+
+}
+
+
