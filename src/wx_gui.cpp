@@ -20,18 +20,21 @@ wxBEGIN_EVENT_TABLE(login_frame,wxFrame)
 wxEND_EVENT_TABLE()
 
 
-login_frame::login_frame(const wxString &tittle ,leangEngine &leTransfer) 
+login_frame::login_frame(const wxString &tittle) 
 : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
 {  
    CenterOnScreen();
    this->mevcutPencereTittle = tittle;
    this->leangVersion = "0.1";
 
-//CONFIG KONSOL INFO
-   std::cout << "MIN_SIZE=" << leTransfer.minSizeArr[0] << "," << leTransfer.minSizeArr[1] << std::endl; 
-   SetMinSize(wxSize(leTransfer.minSizeArr[0],leTransfer.minSizeArr[1]));     
+   leangEngine::leangConfig("../config.txt");
 
-   std::string cfgDurum = (leTransfer.loginGuiActive == 1) ? "TRUE" : "FALSE";  
+
+//CONFIG KONSOL INFO
+   std::cout << "MIN_SIZE=" << leangEngine::minSizeArr[0] << "," << leangEngine::minSizeArr[1] << std::endl; 
+   SetMinSize(wxSize(leangEngine::minSizeArr[0],leangEngine::minSizeArr[1]));     
+
+   std::string cfgDurum = (leangEngine::loginGuiActive == 1) ? "TRUE" : "FALSE";  
    std::cout << "GUI_ACTIVE=" << cfgDurum << std::endl; 
 
 
@@ -176,6 +179,21 @@ void login_frame::errMessage(int hataTip,const std::string &m){
    }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
@@ -198,12 +216,18 @@ enum ID_ENUM_HOME{
     ID_LEANG_EXPORT,
     ID_LEANG_IMPORT,
 
-    ID_LEANG_BASLAT_BUTTON
+    ID_LEANG_BASLAT_BUTTON,
+    ID_LEANG_SORULAN_BUTTON,
+    ID_LEANG_ISTENEN_1_BUTTON,
+    ID_LEANG_ISTENEN_2_BUTTON,
+    ID_LEANG_ISTENEN_3_BUTTON,
+    ID_LEANG_ISTENEN_4_BUTTON
 };
 
 wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_SUPPORT_GITHUB,home_frame::slotSupportGithub)
    EVT_MENU(ID_SETTINGS_OZELLESTIRME,home_frame::slotSettingsTercihler)
+   EVT_BUTTON(ID_LEANG_BASLAT_BUTTON,home_frame::slotHomeFrameBaslatButton)
 wxEND_EVENT_TABLE()
 
 home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,wxDefaultPosition)
@@ -222,15 +246,18 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    menuSettings = new wxMenu;
    menuSupport = new wxMenu;
    menuLeang = new wxMenu;
-   leang_baslat = new wxButton(panel,ID_LEANG_BASLAT_BUTTON,"LEANG BASLAT",wxPoint(575,5),wxSize(150,25));
+
+   //sorulanKelime = new wxButton(panel,ID_LEANG_ISTEKDIL,);
 
 
-   wxBoxSizer* sizer_x = new wxBoxSizer(wxVERTICAL); //dinamik olcekleme
+   leang_baslat = new wxButton(panel,ID_LEANG_BASLAT_BUTTON,"LEANG BASLAT",wxPoint(575,5),wxSize(80,45));
+
+   wxBoxSizer* sizerBox = new wxBoxSizer(wxHORIZONTAL); //dinamik olcekleme
    
-   sizer_x->Add(leang_baslat , wxRIGHT | wxEXPAND , 25);
-   panel->SetSizer(sizer_x);
-   panel->Layout();
-   this->Layout();
+   sizerBox->Add(leang_baslat,1 , wxLEFT | wxRIGHT  , 250);
+   panel->SetSizer(sizerBox);
+
+
 
 ////////////////////////MENU_SETTINGS
    menuSettings->Append(ID_SETTINGS_OZELLESTIRME,"&Ozellestirme (Preferences)\tCTRL+P","pencere boyutu , gui aktifligi vs. ayarlari");
@@ -290,12 +317,52 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
 
 }//HOME_FRAME_CONSTRUCTOR
 
+////////////////////////////////////////////////HOME_FRAME_VIRTUAL_LEANG_ENGINE///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_VIRTUAL_LEANG_ENGINE///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_VIRTUAL_LEANG_ENGINE///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_VIRTUAL_LEANG_ENGINE///////////////////////////////////////////////////
+
+void home_frame::addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 , const std::string &kelime1_anlam){
+
+}
+
+void home_frame::getWord(const std::string &istenenDil , int istenenID){
+
+}
+
+
+
+int home_frame::randomizeID(int database_record_count){
+   database db("../databaseDIR/leang.db");
+   int totalRecord = db.getRecordCount();
+   if(totalRecord <= 1){
+      login_frame::errMessage(3,"KELIME SETINDE YETERI KADAR KELIME YOKTUR !");
+      return 0;
+   }
+
+   srand(time(nullptr)); //seed atama
+   
+   //1 <= randomize_id <= totalRecord
+   int randomize_id = 1 + rand() % totalRecord; 
+
+   return totalRecord;
+}
+
+
+std::string& home_frame::getRandomWord(){}
 
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
+
+void home_frame::slotHomeFrameBaslatButton(wxCommandEvent &e){
+
+   std::cout << "buton tiklandi" << std::endl;
+}
+
+
 
 void home_frame::slotSettingsTercihler(wxCommandEvent &e){
    //home_frame *settings = new home_frame("SETTINGS | Ozellestirme");
@@ -329,7 +396,28 @@ void home_frame::slotLeangImport(wxCommandEvent &e){}
 
 
 
-//////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+/////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+
+
 bool settings_frame::pencereAcikMi = false;
 
 settings_frame::settings_frame(const wxString &tittle , int altPencereNo)
