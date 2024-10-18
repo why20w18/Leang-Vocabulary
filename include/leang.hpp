@@ -13,10 +13,16 @@ public:
 
 protected: //INTERFACE VE STATIC DECLARATION
 
-    virtual void addWord(const std::string &dil_1 , const std::string &dil_2 ,const std::string &kelime1 , const std::string &kelime1_anlam) = 0;
-    virtual void getWord(const std::string &istenenDil , int istenenID) = 0;
-    virtual int randomizeID(int database_record_count) = 0;
-    virtual std::string& getRandomWord() = 0;
+    virtual void addWord(const std::string &dil_1 , 
+                         const std::string &dil_2 ,
+                         const std::string &kelime1 ,
+                         const std::string &kelime1_anlam,
+                         int kelimesetiID) = 0;
+    
+    virtual void getWord(const std::string &istenenDil , int istenenRecord , int kelimesetiID) = 0;
+    
+    virtual int randomizeID(const std::string &kelimeSetiAdi) = 0;
+ //   virtual std::string& getRandomWord() = 0;
 };
 #endif 
 
