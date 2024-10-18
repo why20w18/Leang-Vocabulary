@@ -4,13 +4,14 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <string>
 
 #include <wx-3.2/wx/wx.h>
 
 #include "leang.hpp"
 #include "database.hpp"
 
-
+class home_frame;
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
@@ -65,12 +66,12 @@ private:
     void OnLoginSumbitButton(wxCommandEvent &e); //login sumbit button
     void OnRegisterSumbitButton(wxCommandEvent &e); //register sumbit button
     
+    home_frame *mainMenu;
+
     //makrolar isin icine buton girince event table
     wxDECLARE_EVENT_TABLE();
     //tablo icindekiler makro olarak baslangic ve son arasina yazilir
 };
-
-
 
 ///////////////////////////////////////////////HOME_FRAME_CLASS//////////////////////////////////////////////////
 ///////////////////////////////////////////////HOME_FRAME_CLASS//////////////////////////////////////////////////
@@ -80,8 +81,18 @@ class home_frame : public wxFrame , public leangEngine{
 public:
     //constructor ve wxframeden turedigi icin o classinda constructorini baslatma
     home_frame(const wxString &yeniPencere_Baslik);
+    
+    home_frame* getLoginHomeFrame(){
+        std::cout << "home_frame adres : " << login_home_frame << std::endl;
+        return this->login_home_frame;
+    }
+
+    void setHomeFrameAddr(home_frame *addr){
+        this->login_home_frame = addr;
+    }
 
 private:
+    home_frame *login_home_frame;
 
 //GUI BILESENLERI HOME_FRAME
     wxMenuBar *menuBarHome;
@@ -91,7 +102,9 @@ private:
     wxMenu *menuLeang;    //leang   : kelime_tabani , ogrenilmek_istenen_diller , kelime_setleri , export , import , user_notes
     
     wxButton *leang_baslat; //leang.cpp'ye bagli fonksiyonlari calistirmali
-    
+    wxButton *leang_durdur; //leang.cpp'ye bagli fonksiyonlari calistirmali
+
+
     wxButton *sorulanKelime;
     wxButton *istenenKelime_1;
     wxButton *istenenKelime_2;
@@ -108,15 +121,15 @@ private:
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
     void addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 ,
-     const std::string &kelime1_anlam,int kelimesetiID) override;
+    const std::string &kelime1_anlam,int kelimesetiID) override;
 
     void getWord(const std::string &istenenDil , int istenenRecord , int kelimesetiID) override;
     int randomizeID(const std::string &kelimeSetiAdi) override;
-//    std::string& getRandomWord() override;
+//  std::string& getRandomWord() override;
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
-
+    int setEnabledDisabledButton(int activeButtonCount);
 
 
 
@@ -198,6 +211,7 @@ private:
     bool isUserWantUpdate;
     wxString minSizeLogin;
     wxString minSizeHome;
+
     
     wxCheckBox *checkBox_autoUpdate;
     wxCheckBox *checkBox_loginGuiActive;
@@ -235,19 +249,28 @@ private:
 class leang_frame : public wxFrame{
 public:
     leang_frame(const wxString &tittle,int menuNO);
+    
+    
+    static int mem_secenekSayisi;
+    static int mainMenuBaslatmaSayisi;
 
     void leang_frame_baslatici();
 
-
 private:
-void OnSettingsClose(wxCloseEvent &e);
+    home_frame* homeFrame;
+    int mem_gosterilecekKelimeSayisi;
+    void OnSettingsClose(wxCloseEvent &e);
+
 
 //3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
     wxComboBox *secenekSayisi; //home_framede max 4 dogru cevap min 2 dogru cevap
     wxTextCtrl *gosterilecekKelimeSayisi;
 
+    void OnBaslaticiSaveButton(wxCommandEvent &e);
 
 //3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
+
+    wxDECLARE_EVENT_TABLE();
 };
 
 #endif 

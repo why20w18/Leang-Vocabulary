@@ -10,6 +10,7 @@ int login_frame::isLoginButtonDatabaseConnection = 0;
 enum ID_ENUM_LOGIN{
    ID_LoginSumbit = 1,
    ID_RegisterSumbit,
+   ID_SaveLeangButton
 };
 
 //EVENT TABLE MAKROLARI - bunun yerine dinamik bind kullanilabilirdi
@@ -60,8 +61,7 @@ login_frame::login_frame(const wxString &tittle)
    //w:108..242 = 134
 
    buttonRegister = new wxButton(panel,ID_RegisterSumbit,"Register",wxPoint(146,320),wxSize(80,25));
-   
-   
+
    wxStaticText *leangVersionLabel = new wxStaticText(panel,wxID_ANY,"Leang Version : "+this->leangVersion,wxPoint(130,370));   
 }
 
@@ -201,7 +201,7 @@ void login_frame::errMessage(int hataTip,const std::string &m){
 /////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////HOME_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 
-enum ID_ENUM_HOME{
+enum ID_ENUM_HOME_{
     ID_SETTINGS_OZELLESTIRME = 608,
     ID_SETTINGS_BILDIRIM,
     ID_SETTINGS_PROGRAMDILI,
@@ -254,6 +254,7 @@ wxEND_EVENT_TABLE()
 
 home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,wxDefaultPosition)
 {  
+
    CenterOnScreen();
    std::cout << "HOME PENCERESI BASLATILDI !\n"; 
    SetMinSize(wxSize(750,520));
@@ -273,15 +274,23 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    sorulanKelime->Enable(false);
 
    leang_baslat = new wxButton(panel,ID_LEANG_BASLAT_BUTTON,"LEANG BASLAT",wxPoint(575,5),wxSize(120,50));
-   leang_baslat = new wxButton(panel,ID_LEANG_DURDUR_BUTTON,"LEANG DURDUR",wxPoint(575,75),wxSize(120,50));
+   leang_baslat->Enable(false);
 
+   leang_durdur = new wxButton(panel,ID_LEANG_DURDUR_BUTTON,"LEANG DURDUR",wxPoint(575,75),wxSize(120,50));
+   leang_durdur->Enable(false);
 
 
    istenenKelime_1 = new wxButton(panel,ID_LEANG_ISTENEN_1_BUTTON,this->str_istenenKelime_1,wxPoint(575,150),wxSize(150,50));
+   istenenKelime_1->Enable(false);
+   
    istenenKelime_2 = new wxButton(panel,ID_LEANG_ISTENEN_2_BUTTON,this->str_istenenKelime_2,wxPoint(575,220),wxSize(150,50));
+   istenenKelime_2->Enable(false);
+   
    istenenKelime_3 = new wxButton(panel,ID_LEANG_ISTENEN_3_BUTTON,this->str_istenenKelime_3,wxPoint(575,290),wxSize(150,50));
+   istenenKelime_3->Enable(false);
+   
    istenenKelime_4 = new wxButton(panel,ID_LEANG_ISTENEN_4_BUTTON,this->str_istenenKelime_4,wxPoint(575,360),wxSize(150,50));
-
+   istenenKelime_4->Enable(false);
 
 
 ////////////////////////MENU_SETTINGS
@@ -336,6 +345,10 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    CreateStatusBar();
 
 
+   if(leang_frame::mem_secenekSayisi == 0){
+      login_frame::errMessage(3,"LUTFEN LEANG SEKMESINDEN BASLATICI AYARLARINI YAPIN !");
+      return;
+   }
 
 
 
@@ -373,6 +386,8 @@ int home_frame::randomizeID(const std::string &kelimeSetiAdi){
 
    return totalRecord;
 }
+
+
 
 
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
@@ -419,11 +434,13 @@ void home_frame::slotLeangKelimeTabani(wxCommandEvent &e){
 void home_frame::slotLeangBaslatici(wxCommandEvent &e){
 
    if(!settings_frame::pencereAcikMi){
-   leang_frame *leang_frame_baslatici = new leang_frame("LEANG | Baslatici",LEANG_MENU_BASLATICI);
-   leang_frame_baslatici->Show(true);
-      }
-      else 
-      wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
+   
+      leang_frame *leang_frame_baslatici = new leang_frame("LEANG | Baslatici",LEANG_MENU_BASLATICI);
+      leang_frame_baslatici->Show(true);
+   }
+   
+   else 
+   wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
 
 
 
@@ -533,9 +550,17 @@ void settings_frame::settings_frame_terchiler(){
 /////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
+wxBEGIN_EVENT_TABLE(leang_frame,wxFrame)
+   EVT_BUTTON(ID_SaveLeangButton,leang_frame::OnBaslaticiSaveButton)
+
+
+wxEND_EVENT_TABLE()
+
+int leang_frame::mem_secenekSayisi = 0;
+
 
 leang_frame::leang_frame(const wxString &tittle , int menuNO) 
-: wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition,wxSize(500,250))
+: wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
 {  
    this->Bind(wxEVT_CLOSE_WINDOW,&leang_frame::OnSettingsClose,this);
    settings_frame::pencereAcikMi = true;
@@ -543,13 +568,16 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO)
    SetMinSize(wxSize(500,250));
    this->CenterOnScreen();
 
+   this->gosterilecekKelimeSayisi = 0;
+   this->secenekSayisi = 0; 
+
    switch(menuNO){
-      case LEANG_MENU_KELIME_TABANI:{
+      case LEANG_MENU_BASLATICI:{
          this->leang_frame_baslatici();
          break;
       }
       default:{
-         std::cout << "DEFAULT_LEANG_FRAMA\n";
+         std::cout << "DEFAULT_LEANG_FRAM\n";
          break;
       }
    }
@@ -561,7 +589,41 @@ void  leang_frame::OnSettingsClose(wxCloseEvent &e){
 }
 
 void leang_frame::leang_frame_baslatici(){
+   wxString secenekler[] = {"2","3","4"};
+
+   wxStaticText *label_secenekSayisi = new wxStaticText(this,wxID_ANY,"GOSTERILECEK SECENEK SAYISI : ",wxPoint(10,100),wxDefaultSize);
+   secenekSayisi = new wxComboBox(this,wxID_ANY,"",wxPoint(250,100),wxSize(100,50),3,secenekler,wxCB_READONLY);
+
+   wxStaticText *label_gosterilecekKelimeSayisi = new wxStaticText(this,wxID_ANY,"GOSTERILECEK KELIME SAYISI : ",wxPoint(10,25),wxDefaultSize);
+   gosterilecekKelimeSayisi = new wxTextCtrl(this,wxID_ANY,"",wxPoint(250,25),wxSize(50,25));
    
+   secenekSayisi->SetValue("4");
+   gosterilecekKelimeSayisi->SetValue("10");
+
+   wxButton *kayitButton = new wxButton(this,ID_SaveLeangButton,"KAYDET",wxPoint(370,20),wxSize(100,170));
+
+}
+
+void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
+   std::string StrGosterilecekKelimeSayisi = gosterilecekKelimeSayisi->GetValue().ToStdString();
+   if(StrGosterilecekKelimeSayisi.empty()){
+      login_frame::errMessage(3,"GOSTERILECEK KELIME SAYISI BOS BIRAKILAMAZ !");
+      return;
+   }
+
+   std::string StrSecenekSayisi = secenekSayisi->GetValue().ToStdString();
+   
+   this->mem_gosterilecekKelimeSayisi = std::stoi(StrGosterilecekKelimeSayisi);
+   this->mem_secenekSayisi = std::stoi(StrSecenekSayisi);
+
+
+   std::cout << "LEANG_BASLATICI KAYIT EDILDI\n";
+
+   std::cout << StrGosterilecekKelimeSayisi+"\n";
+   std::cout << StrSecenekSayisi+"\n"; 
+
+   std::cout <<"GOSTERILECEK KELIME_SAYISI : " << this->mem_gosterilecekKelimeSayisi << std::endl;
+   std::cout <<"SECENEK_SAYISI             : " << this->mem_secenekSayisi << std::endl; 
 
 
 }
