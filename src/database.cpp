@@ -5,7 +5,6 @@
 database::database(const std::string &databasePath){
     this->databasePath = databasePath;
     databaseBaglantiBaslat();
-    getRecordCount();
 }
 
 database::~database(){
@@ -114,14 +113,16 @@ int database::userRegister(const std::string &name , const std::string &password
 
 
 //statiklestirilecek ilerleyen zamanda
-int database::getRecordCount(){
-    const char *sqlSorgu = "SELECT COUNT (*) FROM leangWords;";
+int database::getRecordCount(const std::string &kelimeSetiAd){
+    const char *sqlSorgu = "SELECT COUNT (*) FROM ?;";
     sqlite3_stmt *stmt;
     if(sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr) != SQLITE_OK){
         login_frame::errMessage(3,"prepare_v2");
         sqlite3_close(db);
         return -1;
     }
+
+    sqlite3_bind_text(stmt,1,kelimeSetiAd.c_str(),-1,SQLITE_STATIC);
 
     if(sqlite3_step(stmt) == SQLITE_ROW){
         this->databaseCount = sqlite3_column_int(stmt,0);
