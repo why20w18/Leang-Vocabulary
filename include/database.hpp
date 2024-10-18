@@ -29,9 +29,10 @@ public:
     
     
     void addColumns(const std::string &columnsName);
-    void sendWord(const std::string &dil_1 , const std::string &dil_2);
-    void getWord(const std::string &istenenDil);
-    int getRecordCount();
+    void sendWord(const std::string &dil_1 , const std::string &dil_2 , const std::string &kelimeSetiAdi);
+    void getWord(const std::string &istenenDil , const std::string &kelimeSetiAdi);
+    int getRecordCount(const std::string &kelimesetiAdi);
+    void getTableName();
 
 
     //GETTER SETTERLAR
