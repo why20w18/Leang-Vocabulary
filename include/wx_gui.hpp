@@ -6,7 +6,6 @@
 #include <ctime>
 
 #include <wx-3.2/wx/wx.h>
-#include <wx/generic/calctrlg.h>
 
 #include "leang.hpp"
 #include "database.hpp"
@@ -108,10 +107,12 @@ private:
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
-    void addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 , const std::string &kelime1_anlam) override;
-    void getWord(const std::string &istenenDil , int istenenID) override;
-    int randomizeID(int database_record_count) override;
-    std::string& getRandomWord() override;
+    void addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 ,
+     const std::string &kelime1_anlam,int kelimesetiID) override;
+
+    void getWord(const std::string &istenenDil , int istenenRecord , int kelimesetiID) override;
+    int randomizeID(const std::string &kelimeSetiAdi) override;
+//    std::string& getRandomWord() override;
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
@@ -177,17 +178,23 @@ protected:
 ///////////////////////////////////////////////settings_CLASS-SETTINGS//////////////////////////////////////////////////
 ///////////////////////////////////////////////settings_CLASS-SETTINGS//////////////////////////////////////////////////
 ///////////////////////////////////////////////settings_CLASS-SETTINGS//////////////////////////////////////////////////
-
+/*
+1-OZELLESTIRME/TERCIHLER
+2-BILDIRIM
+3-PROGRAM DILI
+4-PROFIL
+*/
 class settings_frame : public wxFrame{
 public:
     static bool pencereAcikMi;
     
     //alt pencere 1'den baslar bir menuBar icinde kac adet menu varsa oraya kadar gider
-    settings_frame(const wxString &tittle);
+    settings_frame(const wxString &tittle,int menuNo);
+    
+    void settings_frame_terchiler();
 
 private:
-
-////TERCIHLER = PREFERENCES////
+//1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
     bool isUserWantUpdate;
     wxString minSizeLogin;
     wxString minSizeHome;
@@ -207,7 +214,7 @@ private:
     //YAZILACAK
     //PREFERENCES-SLOTLAR//
 
-////TERCIHLER = PREFERENCES////
+//1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1
 
 
     void  OnSettingsClose(wxCloseEvent &e);
@@ -217,21 +224,30 @@ private:
 ///////////////////////////////////////////////leang_CLASS-SETTINGS//////////////////////////////////////////////////
 ///////////////////////////////////////////////leang_CLASS-SETTINGS//////////////////////////////////////////////////
 ///////////////////////////////////////////////leang_CLASS-SETTINGS//////////////////////////////////////////////////
-class leang_frame : public wxFrame{
-public:
-    leang_frame(const wxString &tittle);
-
-private:
-    
 /*
 1-KELIME TABANI
 2-KELIME SETLERI
-3-BASLATICI
+3-BASLATICI 
 4-IMPORT
 5-EXPORT
 6-KULLANICI NOTLARI
 */
+class leang_frame : public wxFrame{
+public:
+    leang_frame(const wxString &tittle,int menuNO);
 
+    void leang_frame_baslatici();
+
+
+private:
+void OnSettingsClose(wxCloseEvent &e);
+
+//3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
+    wxComboBox *secenekSayisi; //home_framede max 4 dogru cevap min 2 dogru cevap
+    wxTextCtrl *gosterilecekKelimeSayisi;
+
+
+//3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
 };
 
 #endif 
