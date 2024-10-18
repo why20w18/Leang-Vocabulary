@@ -227,6 +227,21 @@ enum ID_ENUM_HOME{
     ID_LEANG_ISTENEN_4_BUTTON
 };
 
+
+enum settings_leang_menuNO{
+   SETTINGS_MENU_OZELLESTIRME_TERCIHLER = 1337,
+   SETTINGS_MENU_BILDIRIM,
+   SETTINGS_MENU_PROGRAM_DILI,
+   SETTINGS_MENU_PROFIL,
+
+   LEANG_MENU_KELIME_TABANI,
+   LEANG_MENU_KELIME_SETLERI,
+   LEANG_MENU_BASLATICI,
+   LEANG_MENU_IMPORT,
+   LEANG_MENU_EXPORT,
+   LEANG_MENU_KULLANICI_NOTLARI
+};
+
 wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_SUPPORT_GITHUB,home_frame::slotSupportGithub)
   
@@ -332,18 +347,20 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
 ////////////////////////////////////////////////HOME_FRAME_VIRTUAL_LEANG_ENGINE///////////////////////////////////////////////////
 ////////////////////////////////////////////////HOME_FRAME_VIRTUAL_LEANG_ENGINE///////////////////////////////////////////////////
 
-void home_frame::addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 , const std::string &kelime1_anlam){
+void home_frame::addWord(const std::string &dil_1 , const std::string &dil_2,const std::string &kelime1 ,
+ const std::string &kelime1_anlam , int kelimesetiID){
 
 }
-void home_frame::getWord(const std::string &istenenDil , int istenenID){
+void home_frame::getWord(const std::string &istenenDil , int istenenRecord ,  int kelimesetiID){
    
+
 }
 
 
 
-int home_frame::randomizeID(int database_record_count){
+int home_frame::randomizeID(const std::string &kelimeSetiAdi){
    database db("../databaseDIR/leang.db");
-   int totalRecord = db.getRecordCount();
+   int totalRecord = db.getRecordCount(kelimeSetiAdi);
    if(totalRecord <= 1){
       login_frame::errMessage(3,"KELIME SETINDE YETERI KADAR KELIME YOKTUR !");
       return 0;
@@ -357,8 +374,6 @@ int home_frame::randomizeID(int database_record_count){
    return totalRecord;
 }
 
-
-std::string& home_frame::getRandomWord(){}
 
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
@@ -379,7 +394,7 @@ void home_frame::slotSettingsTercihler(wxCommandEvent &e){
    //home_frame *settings = new home_frame("SETTINGS | Ozellestirme");
 
       if(!settings_frame::pencereAcikMi){
-      settings_frame *settings_frame_tercihler = new settings_frame("SETTINGS | Tercihler");
+      settings_frame *settings_frame_tercihler = new settings_frame("SETTINGS | Tercihler",SETTINGS_MENU_OZELLESTIRME_TERCIHLER);
       settings_frame_tercihler->Show(true);
       }
       else 
@@ -404,7 +419,7 @@ void home_frame::slotLeangKelimeTabani(wxCommandEvent &e){
 void home_frame::slotLeangBaslatici(wxCommandEvent &e){
 
    if(!settings_frame::pencereAcikMi){
-   leang_frame *leang_frame_baslatici = new leang_frame("LEANG | Baslatici");
+   leang_frame *leang_frame_baslatici = new leang_frame("LEANG | Baslatici",LEANG_MENU_BASLATICI);
    leang_frame_baslatici->Show(true);
       }
       else 
@@ -445,12 +460,31 @@ void home_frame::slotLeangImport(wxCommandEvent &e){}
 /////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////SETTINGS_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 
+
 bool settings_frame::pencereAcikMi = false;
 
-settings_frame::settings_frame(const wxString &tittle)
+settings_frame::settings_frame(const wxString &tittle,int menuNo)
  : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
 {     
       //settings_frame construct edildiyse pencere baslamistir
+
+      switch(menuNo){
+         case SETTINGS_MENU_OZELLESTIRME_TERCIHLER:{
+            this->settings_frame_terchiler();
+         break;
+         }
+      }
+
+      //destructor yaz calisan caseye gore ve hepsini sil ilerleyen zamanda
+}
+
+void  settings_frame::OnSettingsClose(wxCloseEvent &e){
+   this->pencereAcikMi = false;
+   e.Skip();
+}
+
+//MENU PENCERELERI GUI FONKSIYONLARI
+void settings_frame::settings_frame_terchiler(){
       this->pencereAcikMi = true;
 
       std::cout << "settings_frame initalize" << std::endl;
@@ -479,10 +513,6 @@ settings_frame::settings_frame(const wxString &tittle)
 }
 
 
-void  settings_frame::OnSettingsClose(wxCloseEvent &e){
-   this->pencereAcikMi = false;
-   e.Skip();
-}
 
 
 
@@ -504,15 +534,34 @@ void  settings_frame::OnSettingsClose(wxCloseEvent &e){
 /////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 
-leang_frame::leang_frame(const wxString &tittle) 
+leang_frame::leang_frame(const wxString &tittle , int menuNO) 
 : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition,wxSize(500,250))
 {  
+   this->Bind(wxEVT_CLOSE_WINDOW,&leang_frame::OnSettingsClose,this);
    settings_frame::pencereAcikMi = true;
    SetMaxSize(wxSize(500,250));
    SetMinSize(wxSize(500,250));
    this->CenterOnScreen();
 
-
+   switch(menuNO){
+      case LEANG_MENU_KELIME_TABANI:{
+         this->leang_frame_baslatici();
+         break;
+      }
+      default:{
+         std::cout << "DEFAULT_LEANG_FRAMA\n";
+         break;
+      }
+   }
 }
 
+void  leang_frame::OnSettingsClose(wxCloseEvent &e){
+   settings_frame::pencereAcikMi = false;
+   e.Skip();
+}
 
+void leang_frame::leang_frame_baslatici(){
+   
+
+
+}
