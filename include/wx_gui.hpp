@@ -81,15 +81,7 @@ class home_frame : public wxFrame , public leangEngine{
 public:
     //constructor ve wxframeden turedigi icin o classinda constructorini baslatma
     home_frame(const wxString &yeniPencere_Baslik);
-    
-    home_frame* getLoginHomeFrame(){
-        std::cout << "home_frame adres : " << login_home_frame << std::endl;
-        return this->login_home_frame;
-    }
-
-    void setHomeFrameAddr(home_frame *addr){
-        this->login_home_frame = addr;
-    }
+    int setEnabledDisabledButton(int activeButtonCount);
 
 private:
     home_frame *login_home_frame;
@@ -129,7 +121,6 @@ private:
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
 //LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION//LEANG VIRTUAL DECLERATION
-    int setEnabledDisabledButton(int activeButtonCount);
 
 
 
@@ -248,27 +239,28 @@ private:
 */
 class leang_frame : public wxFrame{
 public:
-    leang_frame(const wxString &tittle,int menuNO);
-    
-    
+    leang_frame(const wxString &tittle,int menuNO,home_frame *home);
+    home_frame *home;
+
     static int mem_secenekSayisi;
-    static int mainMenuBaslatmaSayisi;
+    
 
     void leang_frame_baslatici();
+    void leang_frame_kelimeSetleri();
 
 private:
-    home_frame* homeFrame;
     int mem_gosterilecekKelimeSayisi;
     void OnSettingsClose(wxCloseEvent &e);
 
+    wxComboBox *comboBox_leangMenu_1; 
+    wxStaticText *label_leangMenu_2;
+    wxStaticText *label_leangMenu_1;
+    wxTextCtrl *textCtrl_leangMenu_1;
+    wxButton *button_leangMenu_1;
 
-//3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
-    wxComboBox *secenekSayisi; //home_framede max 4 dogru cevap min 2 dogru cevap
-    wxTextCtrl *gosterilecekKelimeSayisi;
 
     void OnBaslaticiSaveButton(wxCommandEvent &e);
 
-//3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3-3
 
     wxDECLARE_EVENT_TABLE();
 };
