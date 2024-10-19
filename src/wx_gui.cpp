@@ -387,7 +387,40 @@ int home_frame::randomizeID(const std::string &kelimeSetiAdi){
 
    return totalRecord;
 }
-
+////////////////////////////////////////////////HOME_FRAME_METODLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_METODLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_METODLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_METODLARI///////////////////////////////////////////////////
+////////////////////////////////////////////////HOME_FRAME_METODLARI///////////////////////////////////////////////////
+int home_frame::setEnabledDisabledButton(int activeButtonCount){
+   //leang uzerinden bunu cagiracagiz
+   leang_baslat->Enable(true);
+   
+   switch(activeButtonCount){
+      case 2:{
+         istenenKelime_1->Enable(true);
+         istenenKelime_2->Enable(true);
+         istenenKelime_3->Enable(false);
+         istenenKelime_4->Enable(false);
+         return 2;
+      }
+      case 3:{
+         istenenKelime_1->Enable(true);
+         istenenKelime_2->Enable(true);
+         istenenKelime_3->Enable(true);
+         istenenKelime_4->Enable(false);
+         return 3;
+      }
+      case 4:{
+         istenenKelime_1->Enable(true);
+         istenenKelime_2->Enable(true);
+         istenenKelime_3->Enable(true);
+         istenenKelime_4->Enable(true);
+         return 4;
+      }
+   }
+   std::cout << "setEnabledDisabledButton Func\n";
+}
 
 
 
@@ -436,7 +469,7 @@ void home_frame::slotLeangBaslatici(wxCommandEvent &e){
 
    if(!settings_frame::pencereAcikMi){
    
-      leang_frame *leang_frame_baslatici = new leang_frame("LEANG | Baslatici",LEANG_MENU_BASLATICI);
+      leang_frame *leang_frame_baslatici = new leang_frame("LEANG | Baslatici",LEANG_MENU_BASLATICI,this);
       leang_frame_baslatici->Show(true);
    }
    
@@ -560,8 +593,8 @@ wxEND_EVENT_TABLE()
 int leang_frame::mem_secenekSayisi = 0;
 
 
-leang_frame::leang_frame(const wxString &tittle , int menuNO) 
-: wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
+leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home) 
+: wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition) , home(home)
 {  
    this->Bind(wxEVT_CLOSE_WINDOW,&leang_frame::OnSettingsClose,this);
    settings_frame::pencereAcikMi = true;
@@ -569,16 +602,22 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO)
    SetMinSize(wxSize(500,250));
    this->CenterOnScreen();
 
-   this->gosterilecekKelimeSayisi = 0;
-   this->secenekSayisi = 0; 
+   this->textCtrl_leangMenu_1 = 0;
+   this->comboBox_leangMenu_1 = 0; 
 
    switch(menuNO){
       case LEANG_MENU_BASLATICI:{
          this->leang_frame_baslatici();
          break;
       }
+
+      case LEANG_MENU_KELIME_SETLERI:{
+         this->leang_frame_kelimeSetleri();
+         break;
+      }
+
       default:{
-         std::cout << "DEFAULT_LEANG_FRAM\n";
+         std::cout << "DEFAULT_LEANG_FRAME\n";
          break;
       }
    }
@@ -589,25 +628,40 @@ void  leang_frame::OnSettingsClose(wxCloseEvent &e){
    e.Skip();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+/////////////////LEANG_FRAME_MENUSU_DEFINE_ISLEMLERI_BASLANGIC
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void leang_frame::leang_frame_baslatici(){
    wxString secenekler[] = {"2","3","4"};
 
-   wxStaticText *label_secenekSayisi = new wxStaticText(this,wxID_ANY,"GOSTERILECEK SECENEK SAYISI : ",wxPoint(10,100),wxDefaultSize);
-   secenekSayisi = new wxComboBox(this,wxID_ANY,"",wxPoint(250,100),wxSize(100,50),3,secenekler,wxCB_READONLY);
+   label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"GOSTERILECEK SECENEK SAYISI : ",wxPoint(10,100),wxDefaultSize);
+   comboBox_leangMenu_1 = new wxComboBox(this,wxID_ANY,"",wxPoint(250,100),wxSize(100,50),3,secenekler,wxCB_READONLY);
 
-   wxStaticText *label_gosterilecekKelimeSayisi = new wxStaticText(this,wxID_ANY,"GOSTERILECEK KELIME SAYISI : ",wxPoint(10,25),wxDefaultSize);
-   gosterilecekKelimeSayisi = new wxTextCtrl(this,wxID_ANY,"",wxPoint(250,25),wxSize(50,25));
+   label_leangMenu_2 = new wxStaticText(this,wxID_ANY,"GOSTERILECEK KELIME SAYISI : ",wxPoint(10,25),wxDefaultSize);
+   textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(250,25),wxSize(50,25));
    
-   secenekSayisi->SetValue("4");
-   gosterilecekKelimeSayisi->SetValue("0");
+   comboBox_leangMenu_1->SetValue("4");
+   textCtrl_leangMenu_1->SetValue("0");
 
-   wxButton *kayitButton = new wxButton(this,ID_SaveLeangButton,"KAYDET",wxPoint(370,20),wxSize(100,170));
-
+   button_leangMenu_1 = new wxButton(this,ID_SaveLeangButton,"KAYDET",wxPoint(370,20),wxSize(100,170));
 }
 
-void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
-   std::string StrGosterilecekKelimeSayisi = gosterilecekKelimeSayisi->GetValue().ToStdString();
+void leang_frame::leang_frame_kelimeSetleri(){
    
+
+}
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+/////////////////LEANG_FRAME_MENUSU_DEFINE_ISLEMLERI_SON
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
+   std::string StrGosterilecekKelimeSayisi = textCtrl_leangMenu_1->GetValue().ToStdString();
+
    if(StrGosterilecekKelimeSayisi.empty()){
       login_frame::errMessage(3,"GOSTERILECEK KELIME SAYISI BOS BIRAKILAMAZ !");
       return;
@@ -617,7 +671,7 @@ void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
       return;
    }
 
-   std::string StrSecenekSayisi = secenekSayisi->GetValue().ToStdString();
+   std::string StrSecenekSayisi = comboBox_leangMenu_1->GetValue().ToStdString();
    
    this->mem_gosterilecekKelimeSayisi = std::stoi(StrGosterilecekKelimeSayisi);
    this->mem_secenekSayisi = std::stoi(StrSecenekSayisi);
@@ -636,6 +690,7 @@ void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
    leangEngine::leangConfig("../leang.cfg");
 
 //CONFIGLERLE BAGLAMA ISLEMINI YAP
-   wxMessageBox("BASLATICI AYARLARINIZ KAYDEDILDI !","KAYDEDILDI",wxOK | wxICON_INFORMATION);
+   home->setEnabledDisabledButton(mem_secenekSayisi);
 
+   wxMessageBox("BASLATICI AYARLARINIZ KAYDEDILDI !","KAYDEDILDI",wxOK | wxICON_INFORMATION);
 }
