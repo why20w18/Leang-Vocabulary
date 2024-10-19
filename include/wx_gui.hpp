@@ -83,6 +83,9 @@ public:
     home_frame(const wxString &yeniPencere_Baslik);
     int setEnabledDisabledButton(int activeButtonCount);
 
+    //wxMessageBox
+    static void logMessage(const std::string &baslik ,const std::string &textr);
+
 private:
     home_frame *login_home_frame;
 
@@ -252,14 +255,25 @@ private:
     int mem_gosterilecekKelimeSayisi;
     void OnSettingsClose(wxCloseEvent &e);
 
-    wxComboBox *comboBox_leangMenu_1; 
-    wxStaticText *label_leangMenu_2;
+    wxComboBox *comboBox_leangMenu_1;
+    wxComboBox *comboBox_leangMenu_2; 
+    
     wxStaticText *label_leangMenu_1;
+    wxStaticText *label_leangMenu_2;
+    wxStaticText *label_leangMenu_3;
+
     wxTextCtrl *textCtrl_leangMenu_1;
+
     wxButton *button_leangMenu_1;
+    wxButton *button_leangMenu_2;
+    wxButton *button_leangMenu_3;
+    wxButton *button_leangMenu_4;
 
 
     void OnBaslaticiSaveButton(wxCommandEvent &e);
+    void OnAddButton(wxCommandEvent &e);
+    void OnListButton(wxCommandEvent &e);
+
 
 
     wxDECLARE_EVENT_TABLE();
