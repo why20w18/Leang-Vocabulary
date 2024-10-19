@@ -45,7 +45,10 @@ int database::userLogin(const std::string &name , const std::string &password){
     
     if(sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr) != SQLITE_OK){
         login_frame::errMessage(3,"prepare_v2");
+        
+        sqlite3_finalize(stmt);
         sqlite3_close(db);
+
         return -1;
     }
 
@@ -64,10 +67,15 @@ int database::userLogin(const std::string &name , const std::string &password){
         
         std::cout << "backName : " << backName << std::endl;
         std::cout << "backPass : " << backPass << std::endl;
+        
+        sqlite3_finalize(stmt);
         sqlite3_close(db);
+        
         return 1;
     }
+    sqlite3_finalize(stmt);
     sqlite3_close(db);
+    
     return 0;
 }
 
@@ -92,7 +100,10 @@ int database::userRegister(const std::string &name , const std::string &password
 
     if(sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr) != SQLITE_OK){
         login_frame::errMessage(3,"prepare_v2");
+        
+        sqlite3_finalize(stmt);
         sqlite3_close(db);
+    
         return -1;
     }
 
@@ -103,12 +114,16 @@ int database::userRegister(const std::string &name , const std::string &password
     //run
     //DONE 101 DEFINE , if STEP IS SUCCESFUL
     if(sqlite3_step(stmt) == SQLITE_DONE){
+    
+        sqlite3_finalize(stmt);
         sqlite3_close(db);
         return 1;
     }
-
-    return 0;
+    
+    sqlite3_finalize(stmt);
     sqlite3_close(db);
+    
+    return 0;
 }
 
 
@@ -118,7 +133,10 @@ int database::getRecordCount(const std::string &kelimeSetiAd){
     sqlite3_stmt *stmt;
     if(sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr) != SQLITE_OK){
         login_frame::errMessage(3,"prepare_v2");
+        
+        sqlite3_finalize(stmt);
         sqlite3_close(db);
+        
         return -1;
     }
 
@@ -126,6 +144,40 @@ int database::getRecordCount(const std::string &kelimeSetiAd){
 
     if(sqlite3_step(stmt) == SQLITE_ROW){
         this->databaseCount = sqlite3_column_int(stmt,0);
+        return databaseCount;
     }
-    return databaseCount;
+    
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    return -1;
+}
+
+int database::createTable(const std::string &tableName,const std::string &dil_1 , const std::string &dil_2){
+   //tabloya ayni degerler eklenebilsin ki bir kelimenin birden fazla manasi eklensin
+   std::string sqlSorgu = "CREATE TABLE "+tableName+" ("+
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                          dil_1+" TEXT NOT NULL, "+
+                          dil_2+" TEXT NOT NULL);";
+    sqlite3_stmt *stmt;
+    
+    if(sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr) != SQLITE_OK){
+        login_frame::errMessage(3,"prepare_v2");
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+
+        return -1;
+    }
+
+    if(sqlite3_step(stmt) == SQLITE_DONE){
+        wxMessageBox(tableName+" KELIME SETI BASARIYLA OLUSTURULDU !","KELIME SETI EKLENDI",wxOK | wxICON_INFORMATION);
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return 1;
+    }
+
+    login_frame::errMessage(3,"KELIME SETI OLUSTURULAMADI !");
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return 0;
 }
