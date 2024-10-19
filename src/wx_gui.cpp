@@ -10,7 +10,13 @@ int login_frame::isLoginButtonDatabaseConnection = 0;
 enum ID_ENUM_LOGIN{
    ID_LoginSumbit = 1,
    ID_RegisterSumbit,
-   ID_SaveLeangButton
+   
+   ID_SaveLeangBaslaticiButton,
+
+   ID_LeangKelimeSetleriAddButton,
+   ID_LeangKelimeSetleriListButton,
+   ID_LeangKelimeSetleriDeleteButton,
+   ID_LeangKelimeSetleriAddWordsButton
 };
 
 //EVENT TABLE MAKROLARI - bunun yerine dinamik bind kullanilabilirdi
@@ -247,8 +253,9 @@ wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_SUPPORT_GITHUB,home_frame::slotSupportGithub)
   
    EVT_MENU(ID_SETTINGS_OZELLESTIRME,home_frame::slotSettingsTercihler)
-  
    EVT_MENU(ID_LEANG_BASLATICI,home_frame::slotLeangBaslatici)
+   EVT_MENU(ID_LEANG_KELIMESETLERI,home_frame::slotLeangKelimeSetleri)
+   
   
    EVT_BUTTON(ID_LEANG_BASLAT_BUTTON,home_frame::slotHomeFrameBaslatButton)
 wxEND_EVENT_TABLE()
@@ -321,7 +328,7 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
    menuLeang->Append(ID_LEANG_KELIMETABANI,"&Kelime Tabani","tum kullanicilarin tum calisma kelimeleri");
    menuLeang->AppendSeparator();
 
-   menuLeang->Append(ID_LEANG_KELIMESETLERI,"&Kelime Setleri","olusturdugunuz kategorik kelime setlerini inceleyin");
+   menuLeang->Append(ID_LEANG_KELIMESETLERI,"&Kelime Setleri\tCTRL+C","olusturdugunuz kategorik kelime setlerini inceleyin");
    menuLeang->AppendSeparator();
 
    menuLeang->Append(ID_LEANG_BASLATICI,"&Baslatici\tCTRL+S","uzerine calismak istediginiz dilleri , kelimeleri ve fazlasini ayarlayin");
@@ -423,6 +430,10 @@ int home_frame::setEnabledDisabledButton(int activeButtonCount){
 }
 
 
+void home_frame::logMessage(const std::string &baslik ,const std::string &textr){
+   wxMessageBox(textr,baslik,wxOK | wxICON_INFORMATION);
+}
+
 
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
 ////////////////////////////////////////////////HOME_FRAME_SLOT_FONKSIYONLARI///////////////////////////////////////////////////
@@ -484,7 +495,19 @@ void home_frame::slotLeangBaslatici(wxCommandEvent &e){
 
 void home_frame::slotLeangKullaniciNotlari(wxCommandEvent &e){}
     
-void home_frame::slotLeangKelimeSetleri(wxCommandEvent &e){}
+void home_frame::slotLeangKelimeSetleri(wxCommandEvent &e){
+
+     if(!settings_frame::pencereAcikMi){
+   
+      leang_frame *leang_frame_kelimeSetleri = new leang_frame("LEANG | Kelime Setleri",LEANG_MENU_KELIME_SETLERI,this);
+      leang_frame_kelimeSetleri->Show(true);
+   }
+   
+   else 
+   wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
+
+
+}
 void home_frame::slotLeangExport(wxCommandEvent &e){}
 void home_frame::slotLeangImport(wxCommandEvent &e){}
 
@@ -585,8 +608,9 @@ void settings_frame::settings_frame_terchiler(){
 /////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 /////////////////////////////////////////////LEANG_FRAME_CLASS_DEFINE///////////////////////////////////////////////////
 wxBEGIN_EVENT_TABLE(leang_frame,wxFrame)
-   EVT_BUTTON(ID_SaveLeangButton,leang_frame::OnBaslaticiSaveButton)
-
+   EVT_BUTTON(ID_SaveLeangBaslaticiButton,leang_frame::OnBaslaticiSaveButton)
+   EVT_BUTTON(ID_LeangKelimeSetleriAddButton,leang_frame::OnAddButton)
+   EVT_BUTTON(ID_LeangKelimeSetleriListButton,leang_frame::OnListButton)
 
 wxEND_EVENT_TABLE()
 
@@ -645,11 +669,29 @@ void leang_frame::leang_frame_baslatici(){
    comboBox_leangMenu_1->SetValue("4");
    textCtrl_leangMenu_1->SetValue("0");
 
-   button_leangMenu_1 = new wxButton(this,ID_SaveLeangButton,"KAYDET",wxPoint(370,20),wxSize(100,170));
+   button_leangMenu_1 = new wxButton(this,ID_SaveLeangBaslaticiButton,"KAYDET",wxPoint(370,20),wxSize(100,170));
 }
 
 void leang_frame::leang_frame_kelimeSetleri(){
-   
+      wxString diller[] = {"English","Turkish","French","Spanish","Arabic","Chinese"};
+
+      //ogrenilecek dil
+      label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"OGRENILECEK DIL : ",wxPoint(10,20),wxDefaultSize);
+      comboBox_leangMenu_1 = new wxComboBox(this,wxID_ANY,"",wxPoint(150,20),wxSize(110,40),6,diller,wxCB_READONLY);
+      comboBox_leangMenu_1->SetValue("English");
+
+      //bilinen dil
+      label_leangMenu_2 = new wxStaticText(this,wxID_ANY,"BILINEN DIL : ",wxPoint(10,80),wxDefaultSize);
+      comboBox_leangMenu_2 = new wxComboBox(this,wxID_ANY,"",wxPoint(150,80),wxSize(110,40),6,diller,wxCB_READONLY);
+      comboBox_leangMenu_2->SetValue("Turkish");   
+
+      //kelimesetinin adi
+      label_leangMenu_3 = new wxStaticText(this,wxID_ANY,"KELIME SETI ADI : ",wxPoint(10,140),wxDefaultSize);
+      textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(150,140),wxSize(110,40));
+
+      //girdileri saklamak icin butonun baglandigi eventte isleyecegiz olaylari
+      button_leangMenu_1 = new wxButton(this,ID_LeangKelimeSetleriAddButton,"OLUSTUR",wxPoint(350,20),wxSize(100,50));  
+      button_leangMenu_2 = new wxButton(this,ID_LeangKelimeSetleriListButton,"MEVCUT SETLER",wxPoint(350,90),wxSize(100,50));
 
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -689,8 +731,39 @@ void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
 
    leangEngine::leangConfig("../leang.cfg");
 
-//CONFIGLERLE BAGLAMA ISLEMINI YAP
    home->setEnabledDisabledButton(mem_secenekSayisi);
-
    wxMessageBox("BASLATICI AYARLARINIZ KAYDEDILDI !","KAYDEDILDI",wxOK | wxICON_INFORMATION);
 }
+
+void leang_frame::OnAddButton(wxCommandEvent &e){
+   
+   std::string ogrenilecekDil_CB = comboBox_leangMenu_1->GetValue().ToStdString();
+   std::string bilinenDil_CB = comboBox_leangMenu_2->GetValue().ToStdString();
+   std::string kelimeSetiAdi_TC = textCtrl_leangMenu_1->GetValue().ToStdString();
+
+   std::cout << "KELIME SETI OLUSTURULDU !\n";
+   std::cout << "OGRENILECEK DIL : " << ogrenilecekDil_CB << "\nBILINEN DIL : " << bilinenDil_CB << "\n"; 
+   std::cout << "KELIME SETI ADI : " << kelimeSetiAdi_TC << "\n";
+
+   //home frame penceresinden cekecegiz ismi
+   //std::cout << "home_frame pencere tittle : " << home->GetTitle() << "\n";
+
+   short subStrIndexStart = home->GetTitle().ToStdString().find(":");
+   std::string olusturucu_username(home->GetTitle().substr(subStrIndexStart+2));
+
+
+   std::cout << "MEVCUT KULLANICI : " << olusturucu_username << "\n";
+   
+   database db("../databaseDIR/leang.db");
+
+   if(db.createTable(kelimeSetiAdi_TC,ogrenilecekDil_CB,bilinenDil_CB,olusturucu_username) == 1){
+      //gorsel olarak eklenen seti goster
+   }  
+
+}
+
+void leang_frame::OnListButton(wxCommandEvent &e){
+   std::cout << "listeleme butonu\n";
+}
+
+
