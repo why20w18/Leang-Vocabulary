@@ -65,10 +65,7 @@ void leangEngine::leangConfig(const std::string &configPath){
                 }
                 break;
             }
-            case AUTO_UPDATE:{
-                
-                break;
-            }
+            
             case LOGIN_GUI_ACTIVE:{
                 std::string isGuiActive(satir.substr(commandEqualIndex+1));
                 
@@ -82,6 +79,14 @@ void leangEngine::leangConfig(const std::string &configPath){
                 
                 break;
             }
+
+            case AUTO_UPDATE:{
+                break;
+            }
+
+            case AUTO_BACKUP:{
+                break;
+            }           
             
             case LEANG_BASLATICI_KELIME_SAYISI:{
                 std::cout << "gelen kelime_say : " << leang_baslatici_kelime_sayisi << "\n";
@@ -97,7 +102,6 @@ void leangEngine::leangConfig(const std::string &configPath){
         rowNo++;
     }
     cfgIcerik.close();
-
 }
 
 void leangEngine::leangConfigYazma(const std::string &configPath,int yazmaYapilacakSatir,short yazmaYapilacakIndex,int yazilacakVeri){
