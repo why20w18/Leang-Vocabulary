@@ -599,7 +599,7 @@ void leang_frame::leang_frame_baslatici(){
    gosterilecekKelimeSayisi = new wxTextCtrl(this,wxID_ANY,"",wxPoint(250,25),wxSize(50,25));
    
    secenekSayisi->SetValue("4");
-   gosterilecekKelimeSayisi->SetValue("10");
+   gosterilecekKelimeSayisi->SetValue("0");
 
    wxButton *kayitButton = new wxButton(this,ID_SaveLeangButton,"KAYDET",wxPoint(370,20),wxSize(100,170));
 
@@ -607,8 +607,13 @@ void leang_frame::leang_frame_baslatici(){
 
 void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
    std::string StrGosterilecekKelimeSayisi = gosterilecekKelimeSayisi->GetValue().ToStdString();
+   
    if(StrGosterilecekKelimeSayisi.empty()){
       login_frame::errMessage(3,"GOSTERILECEK KELIME SAYISI BOS BIRAKILAMAZ !");
+      return;
+   }
+   if(StrGosterilecekKelimeSayisi.length() != 2 || StrGosterilecekKelimeSayisi[0] == '0'){
+      login_frame::errMessage(3,"EN AZ 10 , EN FAZLA 99 KELIMEYE KADAR IZIN VARDIR");
       return;
    }
 
@@ -631,6 +636,6 @@ void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
    leangEngine::leangConfig("../leang.cfg");
 
 //CONFIGLERLE BAGLAMA ISLEMINI YAP
-   wxMessageBox("LEANGI TEKRAR BASLATTIGINIZDA SECIMLERINIZ GECERLI OLACAKTIR","TEKRAR BASLATMA GEREKLI",wxOK | wxICON_INFORMATION);
+   wxMessageBox("BASLATICI AYARLARINIZ KAYDEDILDI !","KAYDEDILDI",wxOK | wxICON_INFORMATION);
 
 }
