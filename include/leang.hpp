@@ -10,7 +10,7 @@ public:
     static bool leangGuiActive;
     
     static void leangConfig(const std::string &configPath);
-    static void leangConfigYazma(const std::string &configPath,int yazmaYapilacakSatir);
+    static void leangConfigYazma(const std::string &configPath,int yazmaYapilacakSatir,short yazmaYapilacakIndex,int yazilacakVeri);
     
     static int leang_baslatici_kelime_sayisi;
     static int leang_baslatici_secenek_sayisi;
