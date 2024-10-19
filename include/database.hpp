@@ -2,6 +2,7 @@
 #ifndef __DATABASE_HPP__
 #define __DATABASE_HPP__
 
+//https://www.sqlite.org/cintro.html
 #include <sqlite3.h> //sqlite ile beraber tasinacak ilerleyen zamanda drive backup ekle
 #include <string>
 
@@ -27,8 +28,9 @@ public:
     int userRegister(const std::string &name , const std::string &password);
     int deleteRegister(const std::string &name , const std::string &password);
     
-    
+    int createTable(const std::string &tableName,const std::string &dil_1 , const std::string &dil_2);
     void addColumns(const std::string &columnsName);
+    
     void sendWord(const std::string &dil_1 , const std::string &dil_2 , const std::string &kelimeSetiAdi);
     void getWord(const std::string &istenenDil , const std::string &kelimeSetiAdi);
     int getRecordCount(const std::string &kelimesetiAdi);
