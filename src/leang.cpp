@@ -13,7 +13,7 @@ bool leangEngine::leangGuiActive = -1;
 int leangEngine::minSizeArr[2] = {450,450};
 
   
-int leangEngine::leang_baslatici_kelime_sayisi = 10;
+int leangEngine::leang_baslatici_kelime_sayisi = 0;
 int leangEngine::leang_baslatici_secenek_sayisi = 4;
 
 
@@ -82,6 +82,17 @@ void leangEngine::leangConfig(const std::string &configPath){
                 
                 break;
             }
+            
+            case LEANG_BASLATICI_KELIME_SAYISI:{
+                std::cout << "gelen kelime_say : " << leang_baslatici_kelime_sayisi << "\n";
+                leangConfigYazma(configPath,LEANG_BASLATICI_KELIME_SAYISI,commandEqualIndex+1,leang_baslatici_kelime_sayisi);
+                break;
+            }
+            case LEANG_BASLATICI_SECENEK_SAYISI:{
+                std::cout << "gelen baslatici_say : " << leang_baslatici_secenek_sayisi << "\n";
+                leangConfigYazma(configPath,LEANG_BASLATICI_SECENEK_SAYISI,commandEqualIndex+1,leang_baslatici_secenek_sayisi);
+                break;
+            }
        }
         rowNo++;
     }
@@ -89,7 +100,28 @@ void leangEngine::leangConfig(const std::string &configPath){
 
 }
 
-void leangEngine::leangConfigYazma(const std::string &configPath,int yazmaYapilacakSatir){
+void leangEngine::leangConfigYazma(const std::string &configPath,int yazmaYapilacakSatir,short yazmaYapilacakIndex,int yazilacakVeri){
+
+    std::fstream cfgFile(configPath);
+    std::string satir;
+    
+    //byte cinsinden konum satir.length + "\n"
+    std::streampos byteKonum = 0; //streamPosition
+    int satirSay = 0;
 
 
+    while(getline(cfgFile,satir)){
+        satirSay++;
+
+        if(satirSay == yazmaYapilacakSatir){
+            break;
+        }
+            byteKonum += satir.length() + 1;
+    }
+
+    //konum tespitinden sonra yazma islemi
+    cfgFile.seekp(byteKonum+yazmaYapilacakIndex);
+    cfgFile << yazilacakVeri;
+
+    cfgFile.close();
 }
