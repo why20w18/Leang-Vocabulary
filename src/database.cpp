@@ -3,6 +3,7 @@
 #include "../include/wx_gui.hpp"
 
 database::database(const std::string &databasePath){
+    this->currentUserID = -1;
     this->databasePath = databasePath;
     databaseBaglantiBaslat();
 }
@@ -14,6 +15,7 @@ database::~database(){
 
 
 void database::databaseBaglantiBaslat(){
+    this->DatabaseCount = 0;
     int db_status = sqlite3_open(databasePath.c_str(),&db);
     if(db_status){
         login_frame::errMessage(3,"db_status");
@@ -22,6 +24,13 @@ void database::databaseBaglantiBaslat(){
     std::cout << "VERITABANI BASLATILDI\n";
 }
 
+std::string& database::getDatabasePath(){
+        return this->databasePath;
+}
+
+int database::getDatabaseCount(){
+    return this->DatabaseCount;
+}
 
 
 
@@ -143,8 +152,8 @@ int database::getRecordCount(const std::string &kelimeSetiAd){
     sqlite3_bind_text(stmt,1,kelimeSetiAd.c_str(),-1,SQLITE_STATIC);
 
     if(sqlite3_step(stmt) == SQLITE_ROW){
-        this->databaseCount = sqlite3_column_int(stmt,0);
-        return databaseCount;
+        this->DatabaseCount = sqlite3_column_int(stmt,0);
+        return this->DatabaseCount;
     }
     
     sqlite3_finalize(stmt);
@@ -152,12 +161,17 @@ int database::getRecordCount(const std::string &kelimeSetiAd){
     return -1;
 }
 
-int database::createTable(const std::string &tableName,const std::string &dil_1 , const std::string &dil_2){
+//PARAMETRELER : 1-TABLO_ADI,2-OGRENILECEK_DIL,3-BILINEN_DIL
+int database::createTable(const std::string &tableName,const std::string &dil_1 , 
+                          const std::string &dil_2,const std::string &olusturanKullanici)
+{
+ 
    //tabloya ayni degerler eklenebilsin ki bir kelimenin birden fazla manasi eklensin
    std::string sqlSorgu = "CREATE TABLE "+tableName+" ("+
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "+
                           dil_1+" TEXT NOT NULL, "+
-                          dil_2+" TEXT NOT NULL);";
+                          dil_2+" TEXT NOT NULL, "+
+                          "username_"+olusturanKullanici+" TEXT NOT NULL);"; //username_test : test kullanıcısı
     sqlite3_stmt *stmt;
     
     if(sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr) != SQLITE_OK){
@@ -169,7 +183,7 @@ int database::createTable(const std::string &tableName,const std::string &dil_1 
     }
 
     if(sqlite3_step(stmt) == SQLITE_DONE){
-        wxMessageBox(tableName+" KELIME SETI BASARIYLA OLUSTURULDU !","KELIME SETI EKLENDI",wxOK | wxICON_INFORMATION);
+        home_frame::logMessage("YENI KELIME SETI EKLENDI",tableName+" KELIME SETI BASARIYLA OLUSTURULDU !");
         sqlite3_finalize(stmt);
         sqlite3_close(db);
         return 1;
@@ -181,3 +195,24 @@ int database::createTable(const std::string &tableName,const std::string &dil_1 
 
     return 0;
 }
+
+int database::getUserID(std::string &username){
+    const char *sqlSorgu = "SELECT id FROM users WHERE username = ?;";
+
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr);
+    sqlite3_bind_text(stmt,1,username.c_str(),-1,SQLITE_STATIC);
+
+    
+    if(sqlite3_step(stmt) == SQLITE_ROW){
+            this->currentUserID = sqlite3_column_int(stmt,0);
+        if(currentUserID == -1){
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+            return -1;
+        }
+    }
+    
+    return currentUserID;
+}
+
