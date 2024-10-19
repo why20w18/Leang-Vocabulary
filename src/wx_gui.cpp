@@ -23,17 +23,18 @@ wxEND_EVENT_TABLE()
 
 login_frame::login_frame(const wxString &tittle) 
 : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
-{  
+{   
    CenterOnScreen();
    this->mevcutPencereTittle = tittle;
    this->leangVersion = "0.1";
 
-   leangEngine::leangConfig("../config.txt");
+   leangEngine::leangConfig("../leang.cfg");
 
 
 //CONFIG KONSOL INFO
    std::cout << "MIN_SIZE=" << leangEngine::minSizeArr[0] << "," << leangEngine::minSizeArr[1] << std::endl; 
-   SetMinSize(wxSize(leangEngine::minSizeArr[0],leangEngine::minSizeArr[1]));     
+   SetMinSize(wxSize(leangEngine::minSizeArr[0],leangEngine::minSizeArr[1]));   
+   SetMaxSize(wxSize(leangEngine::minSizeArr[0]+50,leangEngine::minSizeArr[1]+50));
 
    std::string cfgDurum = (leangEngine::loginGuiActive == 1) ? "TRUE" : "FALSE";  
    std::cout << "GUI_ACTIVE=" << cfgDurum << std::endl; 
@@ -615,7 +616,9 @@ void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
    
    this->mem_gosterilecekKelimeSayisi = std::stoi(StrGosterilecekKelimeSayisi);
    this->mem_secenekSayisi = std::stoi(StrSecenekSayisi);
-
+   
+   leangEngine::leang_baslatici_kelime_sayisi = this->mem_gosterilecekKelimeSayisi;
+   leangEngine::leang_baslatici_secenek_sayisi = this->mem_secenekSayisi;
 
    std::cout << "LEANG_BASLATICI KAYIT EDILDI\n";
 
@@ -625,5 +628,9 @@ void leang_frame::OnBaslaticiSaveButton(wxCommandEvent &e){
    std::cout <<"GOSTERILECEK KELIME_SAYISI : " << this->mem_gosterilecekKelimeSayisi << std::endl;
    std::cout <<"SECENEK_SAYISI             : " << this->mem_secenekSayisi << std::endl; 
 
+   leangEngine::leangConfig("../leang.cfg");
+
+//CONFIGLERLE BAGLAMA ISLEMINI YAP
+   wxMessageBox("LEANGI TEKRAR BASLATTIGINIZDA SECIMLERINIZ GECERLI OLACAKTIR","TEKRAR BASLATMA GEREKLI",wxOK | wxICON_INFORMATION);
 
 }

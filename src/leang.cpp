@@ -1,7 +1,9 @@
 //leang.cpp
 #include "../include/leang.hpp"
+
 #include <iostream>
 #include <fstream>
+
 #include <string>
 
 //STATIK DEFINE
@@ -10,13 +12,21 @@ bool leangEngine::leangGuiActive = -1;
 
 int leangEngine::minSizeArr[2] = {450,450};
 
+  
+int leangEngine::leang_baslatici_kelime_sayisi = 10;
+int leangEngine::leang_baslatici_secenek_sayisi = 4;
+
+
 enum leangConfigEnum{
     LOGIN_MIN_SIZE=1,
-    AUTO_UPDATE,
+    LEANG_MENU_MIN_SIZE,
     LOGIN_GUI_ACTIVE,
     LEANG_GUI_ACTIVE,
-    LEANG_MENU_MIN_SIZE,
-    AUTO_BACKUP
+    AUTO_UPDATE,
+    AUTO_BACKUP,
+    
+    LEANG_BASLATICI_KELIME_SAYISI,
+    LEANG_BASLATICI_SECENEK_SAYISI,
 };
 
 
@@ -34,13 +44,13 @@ void leangEngine::leangConfig(const std::string &configPath){
 
     while(getline(cfgIcerik,satir)){
        
-        short commandStart = satir.find("=");
+        short commandEqualIndex = satir.find("=");
         
-        if (commandStart == std::string::npos) {
+        if (commandEqualIndex == std::string::npos) {
             continue; //= yoksa satiri atla
         }
 
-        std::string command(satir.substr(commandStart+1));
+        std::string command(satir.substr(commandEqualIndex+1));
 
         switch(rowNo){
             case LOGIN_MIN_SIZE:{
@@ -60,7 +70,7 @@ void leangEngine::leangConfig(const std::string &configPath){
                 break;
             }
             case LOGIN_GUI_ACTIVE:{
-                std::string isGuiActive(satir.substr(commandStart+1));
+                std::string isGuiActive(satir.substr(commandEqualIndex+1));
                 
                 for(char &c : isGuiActive){
                     c = tolower(c);
@@ -72,8 +82,14 @@ void leangEngine::leangConfig(const std::string &configPath){
                 
                 break;
             }
-        }
+       }
         rowNo++;
     }
+    cfgIcerik.close();
+
+}
+
+void leangEngine::leangConfigYazma(const std::string &configPath,int yazmaYapilacakSatir){
+
 
 }
