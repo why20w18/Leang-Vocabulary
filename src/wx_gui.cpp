@@ -17,7 +17,9 @@ enum ID_ENUM_LOGIN{
    ID_LeangKelimeSetleriListButton,
    ID_LeangKelimeSetleriDeleteButton,
    ID_LeangKelimeSetleriAddWordsButton,
-   ID_LeangKelimeSetleriTabaniButton
+   ID_LeangKelimeSetleriTabaniButton,
+   ID_LeangKelimeSetleriDuzenle_SetlerimiGoster,
+   
 };
 
 //EVENT TABLE MAKROLARI - bunun yerine dinamik bind kullanilabilirdi
@@ -630,6 +632,7 @@ wxBEGIN_EVENT_TABLE(leang_frame,wxFrame)
    EVT_BUTTON(ID_SaveLeangBaslaticiButton,leang_frame::OnBaslaticiSaveButton)
    EVT_BUTTON(ID_LeangKelimeSetleriAddButton,leang_frame::OnAddButton)
    EVT_BUTTON(ID_LeangKelimeSetleriListButton,leang_frame::OnListButton)
+   EVT_BUTTON(ID_LeangKelimeSetleriDuzenle_SetlerimiGoster,leang_frame::OnListed)
    
 
 
@@ -756,8 +759,7 @@ void leang_frame::leang_frame_kelimeSetleriDuzenleyici(){ //750x600
    std::cout << "leang_kelimeSetleriDuzenleyici baslatildi\n";
 
    listBox_SetIsimleriGUI =  new wxListBox(this, wxID_ANY, wxPoint(15, 10), wxSize(200, 100));
-   button_leangMenu_1 = new wxButton(this, wxID_ANY, "LISTELERIMI GOSTER", wxPoint(10, 120),wxDefaultSize);
-   button_leangMenu_1->Bind(wxEVT_BUTTON, &leang_frame::OnListed, this);
+   button_leangMenu_1 = new wxButton(this, ID_LeangKelimeSetleriDuzenle_SetlerimiGoster, "LISTELERIMI GOSTER", wxPoint(10, 120),wxDefaultSize);
 
 }
 ///////////////////////////////////////////////////////////////////////////////
