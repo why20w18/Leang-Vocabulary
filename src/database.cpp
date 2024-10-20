@@ -6,12 +6,47 @@ database::database(const std::string &databasePath){
     this->currentUserID = -1;
     this->databasePath = databasePath;
     databaseBaglantiBaslat();
+   // this->userWordSets = new char* [MAX_WORD_SET_SIZE];
+
 }
 
 database::~database(){
-    
+ //  if(count != 0)
+ //   deleterWordSet();
 }
 
+/*
+USER WORD SET
+{
+{"SET_1"},
+{"SET_2"},
+{"SET_3"},
+}
+
+*/
+/*
+void database::deleterWordSet(){
+    for(int i = 0 ; i <= count ; i++){
+        delete[] userWordSets[i];
+    }
+   
+    delete[] userWordSets;
+    userWordSets = nullptr;
+}
+
+void database::addUserWordSet(const char *kelimeSetiAdi) {
+    if(count < MAX_WORD_SET_SIZE){
+        userWordSets[count] = new char[strlen(kelimeSetiAdi) + 1];
+        strcpy(userWordSets[count],kelimeSetiAdi);
+        count++;
+    }
+    std::cout << "add_user_word_set finished\n";
+}
+
+int database::getCountSet(){
+    return count;
+}
+*/
 
 
 void database::databaseBaglantiBaslat(){
@@ -138,9 +173,9 @@ int database::userRegister(const std::string &name , const std::string &password
 
 //statiklestirilecek ilerleyen zamanda
 int database::getRecordCount(const std::string &kelimeSetiAd){
-    const char *sqlSorgu = "SELECT COUNT (*) FROM ?;";
+    std::string sqlSorgu = "SELECT COUNT (*) FROM "+kelimeSetiAd+";";
     sqlite3_stmt *stmt;
-    if(sqlite3_prepare_v2(db,sqlSorgu,-1,&stmt,nullptr) != SQLITE_OK){
+    if(sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr) != SQLITE_OK){
         login_frame::errMessage(3,"prepare_v2");
         
         sqlite3_finalize(stmt);
@@ -148,8 +183,6 @@ int database::getRecordCount(const std::string &kelimeSetiAd){
         
         return -1;
     }
-
-    sqlite3_bind_text(stmt,1,kelimeSetiAd.c_str(),-1,SQLITE_STATIC);
 
     if(sqlite3_step(stmt) == SQLITE_ROW){
         this->DatabaseCount = sqlite3_column_int(stmt,0);
@@ -215,4 +248,34 @@ int database::getUserID(std::string &username){
     
     return currentUserID;
 }
+
+std::vector<std::string> database::getListColumnsContainsUser(const std::string &username) {
+    std::vector<std::string> vec_TabloAdlari;
+
+    const char *sqlFindAllTables = "SELECT name FROM sqlite_master WHERE type='table';";
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v2(db,sqlFindAllTables,-1,&stmt,nullptr);
+
+    while (sqlite3_step(stmt) == SQLITE_ROW){
+        std::string tabloAdi = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
+        std::string sqlGetColumns = "PRAGMA table_info ("+tabloAdi+");";
+        
+        sqlite3_stmt *pragma_stmt;
+        sqlite3_prepare_v2(db, sqlGetColumns.c_str(), -1, &pragma_stmt, nullptr);
+
+        while (sqlite3_step(pragma_stmt) == SQLITE_ROW){//SORGU YAZARKEN 1.INDEX VS. SORGUDAKI YAZIM SIRASIDIR
+            std::string kolonAdi = reinterpret_cast<const char*>(sqlite3_column_text(pragma_stmt, 1));
+
+            if (kolonAdi == "username_"+username){
+                vec_TabloAdlari.push_back(tabloAdi);
+                break;
+            }
+        }
+        sqlite3_finalize(pragma_stmt);
+    }
+
+    sqlite3_finalize(stmt);
+    return vec_TabloAdlari;
+}
+
 
