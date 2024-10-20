@@ -5,6 +5,9 @@
 //https://www.sqlite.org/cintro.html
 #include <sqlite3.h> //sqlite ile beraber tasinacak ilerleyen zamanda drive backup ekle
 #include <string>
+#include <vector>
+
+#define MAX_WORD_SET_SIZE 10
 
 class database{
 public:
@@ -38,6 +41,9 @@ public:
     int getUserID(std::string &username);
     std::string& getDatabasePath();
     int getDatabaseCount();
+
+    std::vector<std::string> getListColumnsContainsUser(const std::string &username);
+
 
 private:
     int currentUserID;
