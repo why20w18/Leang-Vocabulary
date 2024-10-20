@@ -85,8 +85,10 @@ public:
 
     //wxMessageBox
     static void logMessage(const std::string &baslik ,const std::string &textr);
+    std::string olusturucu_username;
 
 private:
+
     home_frame *login_home_frame;
 
 //GUI BILESENLERI HOME_FRAME
@@ -145,6 +147,7 @@ private:
     void slotLeangBaslatici(wxCommandEvent &e);
     void slotLeangKullaniciNotlari(wxCommandEvent &e);
     void slotLeangKelimeSetleri(wxCommandEvent &e);
+    void slotLeangKelimeSetleriDuzenleyici(wxCommandEvent &e);
     void slotLeangExport(wxCommandEvent &e);
     void slotLeangImport(wxCommandEvent &e);
 
@@ -234,8 +237,8 @@ private:
 ///////////////////////////////////////////////leang_CLASS-SETTINGS//////////////////////////////////////////////////
 /*
 1-KELIME TABANI
-2-KELIME SETLERI
-3-BASLATICI 
+2-KELIME SETLERI        +
+3-BASLATICI             +
 4-IMPORT
 5-EXPORT
 6-KULLANICI NOTLARI
@@ -246,13 +249,18 @@ public:
     home_frame *home;
 
     static int mem_secenekSayisi;
+    static int setSayisi;
     
 
     void leang_frame_baslatici();
     void leang_frame_kelimeSetleri();
+    void leang_frame_kelimeSetleriDuzenleyici();
 
 private:
     int mem_gosterilecekKelimeSayisi;
+    std::vector<std::string> kelimeSetiIsimleriVec;
+    std::vector<wxButton *> kelimeSetiTemsil;
+
     void OnSettingsClose(wxCloseEvent &e);
 
     wxComboBox *comboBox_leangMenu_1;
@@ -263,6 +271,7 @@ private:
     wxStaticText *label_leangMenu_3;
 
     wxTextCtrl *textCtrl_leangMenu_1;
+    wxListBox *listBox_SetIsimleriGUI;
 
     wxButton *button_leangMenu_1;
     wxButton *button_leangMenu_2;
@@ -270,13 +279,15 @@ private:
     wxButton *button_leangMenu_4;
 
 
+
+
     void OnBaslaticiSaveButton(wxCommandEvent &e);
     void OnAddButton(wxCommandEvent &e);
     void OnListButton(wxCommandEvent &e);
+    void OnListed(wxCommandEvent &e);
 
 
 
     wxDECLARE_EVENT_TABLE();
 };
-
 #endif 
