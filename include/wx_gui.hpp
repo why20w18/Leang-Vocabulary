@@ -7,6 +7,7 @@
 #include <string>
 
 #include <wx-3.2/wx/wx.h>
+#include <wx-3.2/wx/generic/grid.h>
 
 #include "leang.hpp"
 #include "database.hpp"
@@ -252,12 +253,21 @@ public:
     static int setSayisi;
     
 
+//gui implementasyonlari
     void leang_frame_baslatici();
     void leang_frame_kelimeSetleri();
     void leang_frame_kelimeSetleriDuzenleyici();
+    void leang_frame_kelimeSetleriDuzenleyici_setDuzenle();
 
 private:
+    //CTRL+E
     int mem_gosterilecekKelimeSayisi;
+    int secilenSetIndex;
+    std::string secilenSetIsim;
+    int kelimeSetiShownCountRecord;
+
+    //
+
     std::vector<std::string> kelimeSetiIsimleriVec;
     std::vector<wxButton *> kelimeSetiTemsil;
 
@@ -272,6 +282,8 @@ private:
 
     wxTextCtrl *textCtrl_leangMenu_1;
     wxListBox *listBox_SetIsimleriGUI;
+    wxGrid *wxGrid_WordSetIcerik;
+
 
     wxButton *button_leangMenu_1;
     wxButton *button_leangMenu_2;
@@ -285,6 +297,9 @@ private:
     void OnAddButton(wxCommandEvent &e);
     void OnListButton(wxCommandEvent &e);
     void OnListed(wxCommandEvent &e);
+    void OnUserSelectWordSet(wxCommandEvent &e);
+    void OnSetiDuzenle(wxCommandEvent &e);
+    void OnTextCtrlCountShow(wxCommandEvent &e);
 
 
 
