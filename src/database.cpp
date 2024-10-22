@@ -204,7 +204,8 @@ int database::createTable(const std::string &tableName,const std::string &dil_1 
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "+
                           dil_1+" TEXT NOT NULL, "+
                           dil_2+" TEXT NOT NULL, "+
-                          "username_"+olusturanKullanici+" TEXT NOT NULL);"; //username_test : test kullanıcısı
+                          "username_"+olusturanKullanici+" TEXT);"; //username_test : test kullanıcısı
+                          //bu sutun adi sadece kontrol icin eklendi not null olmasina gerek yoktur
     sqlite3_stmt *stmt;
     
     if(sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr) != SQLITE_OK){
@@ -278,4 +279,43 @@ std::vector<std::string> database::getListColumnsContainsUser(const std::string 
     return vec_TabloAdlari;
 }
 
+std::vector<std::vector<std::string>> database::loadGridWordSet(const std::string &tablo_adi){
+    std::vector<std::vector<std::string>> vec2D_Tablo;
+    std::cout << "DATABASE LOADGRIDWORDSET(&TABLO_ADI="+tablo_adi+")\n";
+    //tablo adi bind edilemez
+    std::string sqlSorgu = "SELECT * FROM "+tablo_adi+";"; 
+    
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr);
 
+    while(sqlite3_step(stmt) == SQLITE_ROW){
+        std::vector<std::string> vec_satir;
+
+        for(int col = 0 ; col < sqlite3_column_count(stmt) ; col++){
+            const char *satirVerisi = reinterpret_cast<const char*>(sqlite3_column_text(stmt,col));
+            vec_satir.push_back(satirVerisi ? satirVerisi : ""); //eger satir verisi bos ise "" at degilse kendisini gonder
+        }
+        vec2D_Tablo.push_back(vec_satir); //vec_satir tum kolonlardaki verileri tutar sonra vec2D_Tablo icine atar
+    }
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return vec2D_Tablo;
+}
+
+
+std::vector<std::string> database::getColumnsName(const std::string &tablo_adi){
+    std::vector<std::string> vec_KolonAdlari;
+
+    std::string sqlSorgu = "PRAGMA table_info("+tablo_adi+");";
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr);
+    
+    while(sqlite3_step(stmt) == SQLITE_ROW){
+        //gelen sonuclardan 1.kolonu cekersek name
+        const char *kolonAdi = reinterpret_cast<const char *>(sqlite3_column_text(stmt,1));
+        vec_KolonAdlari.push_back(kolonAdi);
+    }
+
+    return vec_KolonAdlari;
+}
