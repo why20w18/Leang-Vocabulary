@@ -269,6 +269,8 @@ wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_LEANG_BASLATICI,home_frame::slotLeangBaslatici)
    EVT_MENU(ID_LEANG_KELIMESETLERI,home_frame::slotLeangKelimeSetleri)
    EVT_MENU(ID_LEANG_KELIMESETLERI_DUZENLE,home_frame::slotLeangKelimeSetleriDuzenleyici)
+   EVT_MENU(ID_LEANG_KELIMETABANI,home_frame::slotLeangKelimeTabani)
+   
    
   
    EVT_BUTTON(ID_LEANG_BASLAT_BUTTON,home_frame::slotHomeFrameBaslatButton)
@@ -492,6 +494,17 @@ ADRESINDEN KATKIDA BULUNABILIR PROGRAMDAKI BUGLARI BILDIREBILIRSIN","Support-Git
 }
     
 void home_frame::slotLeangKelimeTabani(wxCommandEvent &e){
+   
+   if(!settings_frame::pencereAcikMi){
+   
+      leang_frame *leang_frame_kelimeTabani = new leang_frame("LEANG | Kelime Tabani",LEANG_MENU_KELIME_TABANI,this);
+      leang_frame_kelimeTabani->Show(true);
+   }
+   
+   else 
+   wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
+
+
 
 }
 
@@ -704,7 +717,11 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home)
       case LEANG_MENU_KELIME_SETLERI_DUZENLEME_GET_DATABASE_TABLE:{
          //DATABASEDEN TABLOLAR BURADA CEKILMELIDIR
          this->leang_frame_kelimeSetleriDuzenleyici_setDuzenle();
+         break;
+      }
 
+      case LEANG_MENU_KELIME_TABANI:{
+         this->leang_frame_kelimeTabani();
          break;
       }
 
@@ -733,6 +750,19 @@ void  leang_frame::OnSettingsClose(wxCloseEvent &e){
 /////////////////LEANG_FRAME_MENUSU_DEFINE_ISLEMLERI_BASLANGIC
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+void leang_frame::leang_frame_kelimeTabani(){
+
+/*
++textCtrl lazim tablo adini alacagiz
++buton lazim
++buton gridi ekranda baslatacak
++grid icin ek pencere olmayacak
+*/
+
+
+}
+
+
 void leang_frame::leang_frame_baslatici(){
    wxString secenekler[] = {"2","3","4"};
 
@@ -777,7 +807,8 @@ void leang_frame::leang_frame_kelimeSetleriDuzenleyici(){ //750x600
    listBox_SetIsimleriGUI =  new wxListBox(this, ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet, wxPoint(15, 50), wxSize(200, 450));
    button_leangMenu_1 = new wxButton(this, ID_LeangKelimeSetleriDuzenle_SetlerimiGoster, "LISTELERIMI GOSTER", wxPoint(250, 50),wxDefaultSize);
    button_leangMenu_2 = new wxButton(this,ID_LeangKelimeSetleriDuzenle_setIcerigiGoruntule,"SETIN ICERIGI",wxPoint(450,50),wxDefaultSize);
-   
+   button_leangMenu_2->Enable(false);
+
    label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"2.SUTUN DILI: ",wxPoint(250,150),wxDefaultSize);
    textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(380,150),wxSize(200,25));
 
@@ -798,12 +829,17 @@ void leang_frame::leang_frame_kelimeSetleriDuzenleyici(){ //750x600
 void leang_frame::leang_frame_kelimeSetleriDuzenleyici_setDuzenle(bool pencereAc){
    //sutun isimlerini db uzerinden cek
    database db("../databaseDIR/leang.db");
+   database db_2("../databaseDIR/leang.db");
+   
+
    std::vector<std::string> kolonAdlari = db.getColumnsName(secilenSetIsim);
    
    
    std::cout << "secilen tablo adi : " << leang_frame::secilenSetIsim << "\n";
-   std::vector<std::vector<std::string>> vec_table_2D = db.loadGridWordSet(leang_frame::secilenSetIsim); 
+   std::vector<std::vector<std::string>> vec_table_2D = db_2.loadGridWordSet(leang_frame::secilenSetIsim); 
    //TABLOYU OLUSTURACAK VEKTORLER BOS MU
+
+
    if(vec_table_2D.empty() || vec_table_2D[0].empty()){
       std::cerr << "gelen tablo bostur , kelime eklemeniz gerekmektedir\n";
       return;
@@ -822,10 +858,9 @@ void leang_frame::leang_frame_kelimeSetleriDuzenleyici_setDuzenle(bool pencereAc
 
 
    //GRID OLUSTURULACAK SONRASINDA ISE LABELLAR YERLESTIRILECEK
-   if(pencereAc == true){
       wxGrid_WordSetIcerik = new wxGrid(this,LEANG_MENU_KELIME_SETLERI_DUZENLEME_GET_DATABASE_TABLE,wxPoint(0,0),wxSize(400,300));
       wxGrid_WordSetIcerik->CreateGrid(satirSayisi,sutunSayisi);
-   }
+   
 
    
    int j = 0;
@@ -865,6 +900,11 @@ void leang_frame::OnAddWords(wxCommandEvent &e){
    this->addWords_sutun2 = this->textCtrl_leangMenu_1->GetValue().ToStdString();
    this->addWords_sutun3 = this->textCtrl_leangMenu_2->GetValue().ToStdString();
 
+   if(addWords_sutun2 == "" || addWords_sutun3 == ""){
+      home_frame::logMessage("BOS METIN EKLEME","LUTFEN KELIMELERI GIRIN VE SONRA EKLEYIN");
+      return;
+   } 
+
    std::cout << "sutun2 eklenecek kelime : " << addWords_sutun2 << std::endl;
    std::cout << "sutun3 eklenecek kelime : " << addWords_sutun3 << std::endl;
 
@@ -872,9 +912,6 @@ void leang_frame::OnAddWords(wxCommandEvent &e){
    db.sendWord(addWords_sutun2,addWords_sutun3,vecKolonAdlari[1],vecKolonAdlari[2],secilenSetIsim);
 
 
-   //grid update
-   wxGrid_WordSetIcerik->ClearGrid();
-   leang_frame_kelimeSetleriDuzenleyici_setDuzenle(false);
 }
 
 
