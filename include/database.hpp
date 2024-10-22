@@ -45,8 +45,10 @@ public:
     std::vector<std::string> getListColumnsContainsUser(const std::string &username);
 
     //grid ile wxListBox secili tablolari birbirine bagla temel ozellikleri ekle
-    void loadGridWordSet(const std::string &tablo_adi);
+    std::vector<std::vector<std::string>> loadGridWordSet(const std::string &tablo_adi);
     void updateGridWordSet();
+
+    std::vector<std::string> getColumnsName(const std::string &tablo_adi);
 
 private:
     int currentUserID;
