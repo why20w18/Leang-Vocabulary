@@ -248,9 +248,12 @@ class leang_frame : public wxFrame{
 public:
     leang_frame(const wxString &tittle,int menuNO,home_frame *home);
     home_frame *home;
+    leang_frame *lf_getDatabaseTable;
 
     static int mem_secenekSayisi;
     static int setSayisi;
+    static int kelimeSetiGridKayitSayisi;
+
     
 
 //gui implementasyonlari
@@ -263,8 +266,8 @@ private:
     //CTRL+E
     int mem_gosterilecekKelimeSayisi;
     int secilenSetIndex;
-    std::string secilenSetIsim;
-    int kelimeSetiShownCountRecord;
+    static std::string secilenSetIsim;
+    
 
     //
 
@@ -299,8 +302,7 @@ private:
     void OnListed(wxCommandEvent &e);
     void OnUserSelectWordSet(wxCommandEvent &e);
     void OnSetiDuzenle(wxCommandEvent &e);
-    void OnTextCtrlCountShow(wxCommandEvent &e);
-
+    void OnSetRecordSayisi(wxCommandEvent &e);
 
 
     wxDECLARE_EVENT_TABLE();
