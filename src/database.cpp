@@ -10,54 +10,22 @@ database::database(const std::string &databasePath){
 
 }
 
-database::~database(){
- //  if(count != 0)
- //   deleterWordSet();
-}
-
-/*
-USER WORD SET
-{
-{"SET_1"},
-{"SET_2"},
-{"SET_3"},
-}
-
-*/
-/*
-void database::deleterWordSet(){
-    for(int i = 0 ; i <= count ; i++){
-        delete[] userWordSets[i];
-    }
-   
-    delete[] userWordSets;
-    userWordSets = nullptr;
-}
-
-void database::addUserWordSet(const char *kelimeSetiAdi) {
-    if(count < MAX_WORD_SET_SIZE){
-        userWordSets[count] = new char[strlen(kelimeSetiAdi) + 1];
-        strcpy(userWordSets[count],kelimeSetiAdi);
-        count++;
-    }
-    std::cout << "add_user_word_set finished\n";
-}
-
-int database::getCountSet(){
-    return count;
-}
-*/
-
-
-void database::databaseBaglantiBaslat(){
-    this->DatabaseCount = 0;
-    int db_status = sqlite3_open(databasePath.c_str(),&db);
-    if(db_status){
-        login_frame::errMessage(3,"db_status");
+void database::databaseBaglantiBaslat() {
+    int db_status = sqlite3_open(databasePath.c_str(), &db);
+    if (db_status != SQLITE_OK) {
+        login_frame::errMessage(3, "Veritabani acilamadi");
+        db = nullptr; // Bağlantı açılamadıysa null yap
         return;
     }
     std::cout << "VERITABANI BASLATILDI\n";
 }
+
+database::~database() {
+    if (db != nullptr) {
+        sqlite3_close(db);
+    }
+}
+
 
 std::string& database::getDatabasePath(){
         return this->databasePath;
@@ -91,7 +59,6 @@ int database::userLogin(const std::string &name , const std::string &password){
         login_frame::errMessage(3,"prepare_v2");
         
         sqlite3_finalize(stmt);
-        sqlite3_close(db);
 
         return -1;
     }
@@ -113,12 +80,10 @@ int database::userLogin(const std::string &name , const std::string &password){
         std::cout << "backPass : " << backPass << std::endl;
         
         sqlite3_finalize(stmt);
-        sqlite3_close(db);
         
         return 1;
     }
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
     
     return 0;
 }
@@ -146,7 +111,6 @@ int database::userRegister(const std::string &name , const std::string &password
         login_frame::errMessage(3,"prepare_v2");
         
         sqlite3_finalize(stmt);
-        sqlite3_close(db);
     
         return -1;
     }
@@ -160,13 +124,10 @@ int database::userRegister(const std::string &name , const std::string &password
     if(sqlite3_step(stmt) == SQLITE_DONE){
     
         sqlite3_finalize(stmt);
-        sqlite3_close(db);
         return 1;
     }
     
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
-    
+    sqlite3_finalize(stmt);    
     return 0;
 }
 
@@ -178,9 +139,7 @@ int database::getRecordCount(const std::string &kelimeSetiAd){
     if(sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr) != SQLITE_OK){
         login_frame::errMessage(3,"prepare_v2");
         
-        sqlite3_finalize(stmt);
-        sqlite3_close(db);
-        
+        sqlite3_finalize(stmt);        
         return -1;
     }
 
@@ -190,7 +149,6 @@ int database::getRecordCount(const std::string &kelimeSetiAd){
     }
     
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
     return -1;
 }
 
@@ -211,7 +169,6 @@ int database::createTable(const std::string &tableName,const std::string &dil_1 
     if(sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr) != SQLITE_OK){
         login_frame::errMessage(3,"prepare_v2");
         sqlite3_finalize(stmt);
-        sqlite3_close(db);
 
         return -1;
     }
@@ -219,13 +176,11 @@ int database::createTable(const std::string &tableName,const std::string &dil_1 
     if(sqlite3_step(stmt) == SQLITE_DONE){
         home_frame::logMessage("YENI KELIME SETI EKLENDI",tableName+" KELIME SETI BASARIYLA OLUSTURULDU !");
         sqlite3_finalize(stmt);
-        sqlite3_close(db);
         return 1;
     }
 
     login_frame::errMessage(3,"KELIME SETI OLUSTURULAMADI !");
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
 
     return 0;
 }
@@ -242,7 +197,6 @@ int database::getUserID(std::string &username){
             this->currentUserID = sqlite3_column_int(stmt,0);
         if(currentUserID == -1){
             sqlite3_finalize(stmt);
-            sqlite3_close(db);
             return -1;
         }
     }
@@ -282,23 +236,33 @@ std::vector<std::string> database::getListColumnsContainsUser(const std::string 
 std::vector<std::vector<std::string>> database::loadGridWordSet(const std::string &tablo_adi){
     std::vector<std::vector<std::string>> vec2D_Tablo;
     std::cout << "DATABASE LOADGRIDWORDSET(&TABLO_ADI="+tablo_adi+")\n";
+    
+    if (!db) {
+        std::cerr << "Veritabani baglantisi geçersiz!\n";
+        return vec2D_Tablo;
+    }
+    
     //tablo adi bind edilemez
     std::string sqlSorgu = "SELECT * FROM "+tablo_adi+";"; 
     
     sqlite3_stmt *stmt;
-    sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr);
+
+    if (sqlite3_prepare_v2(db, sqlSorgu.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "prepare_v2 : " << sqlite3_errmsg(db) << std::endl;
+        return vec2D_Tablo;
+    }
+
 
     while(sqlite3_step(stmt) == SQLITE_ROW){
         std::vector<std::string> vec_satir;
 
         for(int col = 0 ; col < sqlite3_column_count(stmt) ; col++){
             const char *satirVerisi = reinterpret_cast<const char*>(sqlite3_column_text(stmt,col));
-            vec_satir.push_back(satirVerisi ? satirVerisi : ""); //eger satir verisi bos ise "" at degilse kendisini gonder
+            vec_satir.push_back(satirVerisi); //eger satir verisi bos ise "" at degilse kendisini gonder
         }
         vec2D_Tablo.push_back(vec_satir); //vec_satir tum kolonlardaki verileri tutar sonra vec2D_Tablo icine atar
     }
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
 
     return vec2D_Tablo;
 }
@@ -317,13 +281,12 @@ std::vector<std::string> database::getColumnsName(const std::string &tablo_adi){
         vec_KolonAdlari.push_back(kolonAdi);
     }
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
     return vec_KolonAdlari;
 }
 
 
 void database::sendWord(const std::string &dil_1 , const std::string &dil_2,const std::string &col1,const std::string &col2 , const std::string &tablo_ad){
-    std::string sqlSorgu = "INSERT INTO "+tablo_ad+"("+col1+","+col2+") VALUES("+dil_1+","+dil_2+");";
+    std::string sqlSorgu = "INSERT INTO "+tablo_ad+"("+col1+","+col2+") VALUES('"+dil_1+"','"+dil_2+"');";
     
     sqlite3_stmt *stmt;
     sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr);
@@ -331,8 +294,7 @@ void database::sendWord(const std::string &dil_1 , const std::string &dil_2,cons
         home_frame::logMessage("KELIME BASARIYLA EKLENDI",tablo_ad+" KELIME SETINE EKLENDI !");
     }
     else{
-        home_frame::logMessage("KELIME EKLEMEDE PROBLEM",tablo_ad+" KELIME SETINE EKLENEMEDI !");
+        home_frame::logMessage("KELIME EKLEMEDE PROBLEM",tablo_ad+" KELIME SETINE EKLENEMEDI !"+std::string(sqlite3_errmsg(db)));
     }
     sqlite3_finalize(stmt);
-    sqlite3_close(db);
 }
