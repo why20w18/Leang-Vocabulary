@@ -12,6 +12,9 @@
 #include "leang.hpp"
 #include "database.hpp"
 
+#define VARSAYILAN_KAYIT_SAYISI 50
+#define _STATIC_MEMBER_
+
 class home_frame;
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
@@ -31,10 +34,10 @@ public:
 
 //STATIC
     //return=1=true,0=false
-    static int isLoginButtonDatabaseConnection;
+    _STATIC_MEMBER_ static int isLoginButtonDatabaseConnection;
 
     //LOGIN=1,REGISTER=2,VERITABANI=3
-    static void errMessage(int hataTip,const std::string &msg = "");
+    _STATIC_MEMBER_ static void errMessage(int hataTip,const std::string &msg = "");
 
 //pencerelerin adini tittle olarak icindeki komponentlerle tut konsol kismi icin
 
@@ -85,7 +88,7 @@ public:
     int setEnabledDisabledButton(int activeButtonCount);
 
     //wxMessageBox
-    static void logMessage(const std::string &baslik ,const std::string &textr);
+    _STATIC_MEMBER_ static void logMessage(const std::string &baslik ,const std::string &textr);
     std::string olusturucu_username;
 
 private:
@@ -197,7 +200,7 @@ protected:
 */
 class settings_frame : public wxFrame{
 public:
-    static bool pencereAcikMi;
+    _STATIC_MEMBER_ static bool pencereAcikMi;
     
     //alt pencere 1'den baslar bir menuBar icinde kac adet menu varsa oraya kadar gider
     settings_frame(const wxString &tittle,int menuNo);
@@ -250,9 +253,9 @@ public:
     home_frame *home;
     leang_frame *lf_getDatabaseTable;
 
-    static int mem_secenekSayisi;
-    static int setSayisi;
-    static int kelimeSetiGridKayitSayisi;
+    _STATIC_MEMBER_ static int mem_secenekSayisi;
+    _STATIC_MEMBER_ static int setSayisi;
+    _STATIC_MEMBER_ static int kelimeSetiGridKayitSayisi;
 
     
 
@@ -266,7 +269,7 @@ private:
     //CTRL+E
     int mem_gosterilecekKelimeSayisi;
     int secilenSetIndex;
-    static std::string secilenSetIsim;
+    _STATIC_MEMBER_ static std::string secilenSetIsim;
     
 
     //
