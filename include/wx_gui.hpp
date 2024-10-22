@@ -315,6 +315,8 @@ private:
     //void OnSetRecordSayisi(wxCommandEvent &e);
     void OnAddWords(wxCommandEvent &e);
 
+    void OnGetTableLF_KT(wxCommandEvent &e);
+
 
     wxDECLARE_EVENT_TABLE();
 };
