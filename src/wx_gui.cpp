@@ -319,7 +319,7 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
 
 
 ////////////////////////MENU_SETTINGS
-   menuSettings->Append(ID_SETTINGS_OZELLESTIRME,"&Ozellestirme (Preferences)\tCTRL+P","pencere boyutu , gui aktifligi vs. ayarlari");
+   menuSettings->Append(ID_SETTINGS_OZELLESTIRME,"&Tercihler (Preferences)\tCTRL+P","pencere boyutu , gui aktifligi vs. ayarlari");
    menuSettings->AppendSeparator();
    
    menuSettings->Append(ID_SETTINGS_BILDIRIM,"&Bildirimler (Repeat)\tCTRL+R","leang'in size bildirim gonderme sikligini ayarlayin");
@@ -342,13 +342,13 @@ home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,w
 
 
 ////////////////////////MENU_LEANG
-   menuLeang->Append(ID_LEANG_KELIMETABANI,"&Kelime Tabani","tum kullanicilarin tum calisma kelimeleri");
+   menuLeang->Append(ID_LEANG_KELIMETABANI,"&Kelime Tabani","mevcut kullanicinin kelime setlerindeki kelimeleri inceleyin");
    menuLeang->AppendSeparator();
 
-   menuLeang->Append(ID_LEANG_KELIMESETLERI_DUZENLE,"&Kelime Setleri Duzenleyici\tCTRL+E","Kelime setlerinize kelime ekleyin yada silin");
+   menuLeang->Append(ID_LEANG_KELIMESETLERI_DUZENLE,"&Kelime Ekle\tCTRL+E","kelime setlerinize kelime ekleyin yada silin");
    menuLeang->AppendSeparator();
 
-   menuLeang->Append(ID_LEANG_KELIMESETLERI,"&Kelime Setleri\tCTRL+C","olusturdugunuz kategorik kelime setlerini inceleyin");
+   menuLeang->Append(ID_LEANG_KELIMESETLERI,"&Kelime Seti Olustur\tCTRL+C","olusturdugunuz kategorik kelime setlerini inceleyin");
    menuLeang->AppendSeparator();
 
    menuLeang->Append(ID_LEANG_BASLATICI,"&Baslatici\tCTRL+S","uzerine calismak istediginiz dilleri , kelimeleri ve fazlasini ayarlayin");
@@ -531,7 +531,7 @@ void home_frame::slotLeangKelimeSetleri(wxCommandEvent &e){
 
      if(!settings_frame::pencereAcikMi){
    
-      leang_frame *leang_frame_kelimeSetleri = new leang_frame("LEANG | Kelime Setleri",LEANG_MENU_KELIME_SETLERI,this);
+      leang_frame *leang_frame_kelimeSetleri = new leang_frame("LEANG | Kelime Seti Olustur",LEANG_MENU_KELIME_SETLERI,this);
       leang_frame_kelimeSetleri->Show(true);
    }
    
@@ -542,7 +542,7 @@ void home_frame::slotLeangKelimeSetleri(wxCommandEvent &e){
 void home_frame::slotLeangKelimeSetleriDuzenleyici(wxCommandEvent &e){
     if(!settings_frame::pencereAcikMi){
    
-      leang_frame *leang_frame_kelimeSetleriDuzenleyici = new leang_frame("LEANG | Kelime Setleri Duzenleyici",LEANG_MENU_KELIME_SETLERI_DUZENLEME,this);
+      leang_frame *leang_frame_kelimeSetleriDuzenleyici = new leang_frame("LEANG | Kelime Ekle",LEANG_MENU_KELIME_SETLERI_DUZENLEME,this);
       leang_frame_kelimeSetleriDuzenleyici->Show(true);
    }
    else 
@@ -681,13 +681,10 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home)
    this->Bind(wxEVT_CLOSE_WINDOW,&leang_frame::OnSettingsClose,this);
    settings_frame::pencereAcikMi = true;
    
-   if(menuNO == LEANG_MENU_KELIME_SETLERI_DUZENLEME || 
-      menuNO == LEANG_MENU_KELIME_SETLERI_DUZENLEME_GET_DATABASE_TABLE){
-      
-      if(menuNO == LEANG_MENU_KELIME_SETLERI_DUZENLEME)
-      SetMaxSize(wxSize(750,600));
-
+   if(menuNO == LEANG_MENU_KELIME_TABANI){
+      //SetMaxSize(wxSize(750,600));
       SetMinSize(wxSize(750,600));
+
    }
    else{
       SetMaxSize(wxSize(500,250));
@@ -804,19 +801,17 @@ void leang_frame::leang_frame_kelimeSetleri(){
 void leang_frame::leang_frame_kelimeSetleriDuzenleyici(){ //750x600
    std::cout << "leang_kelimeSetleriDuzenleyici baslatildi\n";
 
-   listBox_SetIsimleriGUI =  new wxListBox(this, ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet, wxPoint(15, 50), wxSize(200, 450));
-   button_leangMenu_1 = new wxButton(this, ID_LeangKelimeSetleriDuzenle_SetlerimiGoster, "LISTELERIMI GOSTER", wxPoint(250, 50),wxDefaultSize);
-   button_leangMenu_2 = new wxButton(this,ID_LeangKelimeSetleriDuzenle_setIcerigiGoruntule,"SETIN ICERIGI",wxPoint(450,50),wxDefaultSize);
-   button_leangMenu_2->Enable(false);
+   listBox_SetIsimleriGUI =  new wxListBox(this, ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet, wxPoint(15, 20), wxSize(200, 150));
+   button_leangMenu_1 = new wxButton(this, ID_LeangKelimeSetleriDuzenle_SetlerimiGoster, "LISTELERIMI GOSTER", wxPoint(250, 20),wxDefaultSize);
+   
+   label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"2.SUTUN DILI: ",wxPoint(250,80),wxDefaultSize);
+   textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(250,100),wxSize(200,25));
 
-   label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"2.SUTUN DILI: ",wxPoint(250,150),wxDefaultSize);
-   textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(380,150),wxSize(200,25));
-
-   label_leangMenu_2 = new wxStaticText(this,wxID_ANY,"3.SUTUN DILI: ",wxPoint(250,220),wxDefaultSize);
-   textCtrl_leangMenu_2 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(380,220),wxSize(200,25));
+   label_leangMenu_2 = new wxStaticText(this,wxID_ANY,"3.SUTUN DILI: ",wxPoint(250,150),wxDefaultSize);
+   textCtrl_leangMenu_2 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(250,170),wxSize(200,25));
 
 
-   button_leangMenu_3 = new wxButton(this,ID_LeangKelimeSetleriDuzenle_addWords,"KELIME EKLE",wxPoint(250,260),wxDefaultSize);
+   button_leangMenu_3 = new wxButton(this,ID_LeangKelimeSetleriDuzenle_addWords,"KELIME EKLE",wxPoint(55,180),wxDefaultSize);
 
 }
 
