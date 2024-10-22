@@ -657,7 +657,7 @@ wxEND_EVENT_TABLE()
 int leang_frame::mem_secenekSayisi = 0;
 int leang_frame::setSayisi = 0;
 std::string leang_frame::secilenSetIsim = "";
-int kelimeSetiGridKayitSayisi = VARSAYILAN_KAYIT_SAYISI;
+int leang_frame::kelimeSetiGridKayitSayisi = VARSAYILAN_KAYIT_SAYISI;
 
 
 
