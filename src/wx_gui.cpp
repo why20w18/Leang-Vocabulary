@@ -24,6 +24,9 @@ enum ID_ENUM_LOGIN_LEANGMENU{
    ID_LeangKelimeSetleriDuzenle_setShownCount,
    ID_LeangKelimeSetleriDuzenle_addWords,
 
+
+   ID_BUTTON_GET_TABLE,
+
    
 };
 
@@ -658,6 +661,7 @@ wxBEGIN_EVENT_TABLE(leang_frame,wxFrame)
    EVT_BUTTON(ID_LeangKelimeSetleriDuzenle_setIcerigiGoruntule,leang_frame::OnSetiDuzenle)
 //   EVT_BUTTON(ID_LeangKelimeSetleriDuzenle_setShownCount,leang_frame::OnSetRecordSayisi)
    EVT_BUTTON(ID_LeangKelimeSetleriDuzenle_addWords,leang_frame::OnAddWords)
+   EVT_BUTTON(ID_BUTTON_GET_TABLE,leang_frame::OnGetTableLF_KT)
 
    
    EVT_LISTBOX(ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet,leang_frame::OnUserSelectWordSet)
@@ -747,7 +751,15 @@ void  leang_frame::OnSettingsClose(wxCloseEvent &e){
 /////////////////LEANG_FRAME_MENUSU_DEFINE_ISLEMLERI_BASLANGIC
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//leang_frame_kelimeTabani() func
+
 void leang_frame::leang_frame_kelimeTabani(){
+//event button baglandi
 
 /*
 +textCtrl lazim tablo adini alacagiz
@@ -756,8 +768,24 @@ void leang_frame::leang_frame_kelimeTabani(){
 +grid icin ek pencere olmayacak
 */
 
+button_leangMenu_1 = new wxButton(this,ID_BUTTON_GET_TABLE,"TABLOYU GETIR",wxPoint(300,10),wxDefaultSize);
+label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"TABLO ADI : ",wxPoint(10,10),wxDefaultSize);
+textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(100,10),wxSize(180,30));
+
+
 
 }
+
+void leang_frame::OnGetTableLF_KT(wxCommandEvent &e){
+
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 void leang_frame::leang_frame_baslatici(){
