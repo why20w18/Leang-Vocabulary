@@ -34,10 +34,10 @@ public:
 
 //STATIC
     //return=1=true,0=false
-    _STATIC_MEMBER_ static int isLoginButtonDatabaseConnection;
+     static int isLoginButtonDatabaseConnection;
 
     //LOGIN=1,REGISTER=2,VERITABANI=3
-    _STATIC_MEMBER_ static void errMessage(int hataTip,const std::string &msg = "");
+     static void errMessage(int hataTip,const std::string &msg = "");
 
 //pencerelerin adini tittle olarak icindeki komponentlerle tut konsol kismi icin
 
@@ -88,7 +88,7 @@ public:
     int setEnabledDisabledButton(int activeButtonCount);
 
     //wxMessageBox
-    _STATIC_MEMBER_ static void logMessage(const std::string &baslik ,const std::string &textr);
+     static void logMessage(const std::string &baslik ,const std::string &textr);
     std::string olusturucu_username;
 
 private:
@@ -200,7 +200,7 @@ protected:
 */
 class settings_frame : public wxFrame{
 public:
-    _STATIC_MEMBER_ static bool pencereAcikMi;
+     static bool pencereAcikMi;
     
     //alt pencere 1'den baslar bir menuBar icinde kac adet menu varsa oraya kadar gider
     settings_frame(const wxString &tittle,int menuNo);
@@ -253,9 +253,9 @@ public:
     home_frame *home;
     leang_frame *lf_getDatabaseTable;
 
-    _STATIC_MEMBER_ static int mem_secenekSayisi;
-    _STATIC_MEMBER_ static int setSayisi;
-    _STATIC_MEMBER_ static int kelimeSetiGridKayitSayisi;
+     static int mem_secenekSayisi;
+     static int setSayisi;
+     static int kelimeSetiGridKayitSayisi;
 
     
 
@@ -263,13 +263,16 @@ public:
     void leang_frame_baslatici();
     void leang_frame_kelimeSetleri();
     void leang_frame_kelimeSetleriDuzenleyici();
-    void leang_frame_kelimeSetleriDuzenleyici_setDuzenle();
+    void leang_frame_kelimeSetleriDuzenleyici_setDuzenle(bool pencereAc = true);
 
 private:
     //CTRL+E
     int mem_gosterilecekKelimeSayisi;
     int secilenSetIndex;
-    _STATIC_MEMBER_ static std::string secilenSetIsim;
+    static std::string secilenSetIsim;
+    
+    std::string addWords_sutun2;
+    std::string addWords_sutun3;
     
 
     //
@@ -287,6 +290,9 @@ private:
     wxStaticText *label_leangMenu_3;
 
     wxTextCtrl *textCtrl_leangMenu_1;
+    wxTextCtrl *textCtrl_leangMenu_2;
+
+
     wxListBox *listBox_SetIsimleriGUI;
     wxGrid *wxGrid_WordSetIcerik;
 
@@ -305,7 +311,8 @@ private:
     void OnListed(wxCommandEvent &e);
     void OnUserSelectWordSet(wxCommandEvent &e);
     void OnSetiDuzenle(wxCommandEvent &e);
-    void OnSetRecordSayisi(wxCommandEvent &e);
+    //void OnSetRecordSayisi(wxCommandEvent &e);
+    void OnAddWords(wxCommandEvent &e);
 
 
     wxDECLARE_EVENT_TABLE();

@@ -32,7 +32,7 @@ public:
     int createTable(const std::string &tableName,const std::string &dil_1 , const std::string &dil_2,const std::string &olusturanKullanici);
     void addColumns(const std::string &columnsName);
     
-    void sendWord(const std::string &dil_1 , const std::string &dil_2 , const std::string &kelimeSetiAdi);
+    void sendWord(const std::string &dil_1 , const std::string &dil_2 ,const std::string &col1,const std::string &col2, const std::string &kelimeSetiAdi);
     void getWord(const std::string &istenenDil , const std::string &kelimeSetiAdi);
     int getRecordCount(const std::string &kelimesetiAdi);
     
@@ -49,6 +49,8 @@ public:
     void updateGridWordSet();
 
     std::vector<std::string> getColumnsName(const std::string &tablo_adi);
+
+
 
 private:
     int currentUserID;

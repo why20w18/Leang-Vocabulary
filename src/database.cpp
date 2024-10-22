@@ -316,6 +316,23 @@ std::vector<std::string> database::getColumnsName(const std::string &tablo_adi){
         const char *kolonAdi = reinterpret_cast<const char *>(sqlite3_column_text(stmt,1));
         vec_KolonAdlari.push_back(kolonAdi);
     }
-
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
     return vec_KolonAdlari;
+}
+
+
+void database::sendWord(const std::string &dil_1 , const std::string &dil_2,const std::string &col1,const std::string &col2 , const std::string &tablo_ad){
+    std::string sqlSorgu = "INSERT INTO "+tablo_ad+"("+col1+","+col2+") VALUES("+dil_1+","+dil_2+");";
+    
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr);
+    if(sqlite3_step(stmt) == SQLITE_DONE){
+        home_frame::logMessage("KELIME BASARIYLA EKLENDI",tablo_ad+" KELIME SETINE EKLENDI !");
+    }
+    else{
+        home_frame::logMessage("KELIME EKLEMEDE PROBLEM",tablo_ad+" KELIME SETINE EKLENEMEDI !");
+    }
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
 }
