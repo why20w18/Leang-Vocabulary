@@ -3,7 +3,6 @@
 #include "../include/leang.hpp"
 #include "../include/database.hpp"
 
-#define VARSAYILAN_KAYIT_SAYISI 50
 
 //STATIC DEFINE
 int login_frame::isLoginButtonDatabaseConnection = 0;
@@ -806,7 +805,7 @@ void leang_frame::leang_frame_kelimeSetleriDuzenleyici_setDuzenle(){
    
    
    //SATIR SUTUN SAYISI KONTROLU
-   int satirSayisi = vec_table_2D.size();
+   int satirSayisi = kelimeSetiGridKayitSayisi;//vec_table_2D.size();
    int sutunSayisi = vec_table_2D[0].size();
       
    if(satirSayisi <= 0 && sutunSayisi <= 0){
@@ -854,8 +853,6 @@ void leang_frame::OnSetRecordSayisi(wxCommandEvent &e){
    std::cout << kelimeSetiGridKayitSayisi << "\n";
 
 }
-
-
 
 void leang_frame::OnSetiDuzenle(wxCommandEvent &e){
    std::cout << "duzenle buton leang_menu_duzenle\n";
