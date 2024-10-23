@@ -522,10 +522,6 @@ void home_frame::slotLeangBaslatici(wxCommandEvent &e){
    else 
    wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
 
-
-
-   
-
 }
 
 void home_frame::slotLeangKullaniciNotlari(wxCommandEvent &e){}
@@ -733,14 +729,6 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home)
    }
 }//CONSTRUCTOR
 
-
-
-
-
-
-
-
-
 void  leang_frame::OnSettingsClose(wxCloseEvent &e){
    settings_frame::pencereAcikMi = false;
    e.Skip();
@@ -768,17 +756,42 @@ void leang_frame::leang_frame_kelimeTabani(){
 +grid icin ek pencere olmayacak
 */
 
-button_leangMenu_1 = new wxButton(this,ID_BUTTON_GET_TABLE,"TABLOYU GETIR",wxPoint(300,10),wxDefaultSize);
+button_leangMenu_1 = new wxButton(this,ID_BUTTON_GET_TABLE,"SETI GETIR",wxPoint(300,10),wxDefaultSize);
+button_leangMenu_2 = new wxButton(this,ID_LeangKelimeSetleriDuzenle_SetlerimiGoster,"SETI LISTELE",wxPoint(510,10),wxDefaultSize);
+listBox_SetIsimleriGUI = new wxListBox(this,ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet,wxPoint(465,50),wxSize(200,200));
+
 label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"TABLO ADI : ",wxPoint(10,10),wxDefaultSize);
 textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(100,10),wxSize(180,30));
-
 
 
 }
 
 void leang_frame::OnGetTableLF_KT(wxCommandEvent &e){
+   std::cout << "ongetTable : " << secilenSetIsim << "\n";
+   wxGrid_WordSetIcerik = new wxGrid(this,LEANG_MENU_KELIME_SETLERI_DUZENLEME_GET_DATABASE_TABLE,wxPoint(0,0),wxSize(400,300));
+   
+   //sutun isimlerini db uzerinden cek
+   database db("../databaseDIR/leang.db");
 
+   std::vector<std::string> kolonAdlari = db.getColumnsName(secilenSetIsim);
+   
+   std::cout << "secilen tablo adi : " << leang_frame::secilenSetIsim << "\n";
+   std::vector<std::vector<std::string>> vec_table_2D = db.loadGridWordSet(leang_frame::secilenSetIsim); 
+   //TABLOYU OLUSTURACAK VEKTORLER BOS MU
+  
+   
+   //SATIR SUTUN SAYISI KONTROLU
+   int satirSayisi = vec_table_2D.size(); //kelimeSetiGridKayitSayisi;
+   int sutunSayisi = vec_table_2D[0].size();
 
+   //GRID OLUSTURULACAK SONRASINDA ISE LABELLAR YERLESTIRILECEK
+      wxGrid_WordSetIcerik->CreateGrid(satirSayisi,sutunSayisi);
+      
+   for(int row = 0 ; row < satirSayisi ; row++){
+      for(int col = 0 ; col < sutunSayisi ; col++){
+         wxGrid_WordSetIcerik->SetCellValue(row,col,vec_table_2D[row][col]);
+      }
+   }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -850,62 +863,7 @@ void leang_frame::leang_frame_kelimeSetleriDuzenleyici(){ //750x600
       }
    */
 void leang_frame::leang_frame_kelimeSetleriDuzenleyici_setDuzenle(bool pencereAc){
-   //sutun isimlerini db uzerinden cek
-   database db("../databaseDIR/leang.db");
-   database db_2("../databaseDIR/leang.db");
    
-
-   std::vector<std::string> kolonAdlari = db.getColumnsName(secilenSetIsim);
-   
-   
-   std::cout << "secilen tablo adi : " << leang_frame::secilenSetIsim << "\n";
-   std::vector<std::vector<std::string>> vec_table_2D = db_2.loadGridWordSet(leang_frame::secilenSetIsim); 
-   //TABLOYU OLUSTURACAK VEKTORLER BOS MU
-
-
-   if(vec_table_2D.empty() || vec_table_2D[0].empty()){
-      std::cerr << "gelen tablo bostur , kelime eklemeniz gerekmektedir\n";
-      return;
-   }
-   
-   
-   //SATIR SUTUN SAYISI KONTROLU
-   int satirSayisi = vec_table_2D.size(); //kelimeSetiGridKayitSayisi;
-   int sutunSayisi = vec_table_2D[0].size();
-      
-   if(satirSayisi <= 0 && sutunSayisi <= 0){
-      std::cerr << "HATALI SATIR VE SUTUN SAYISI : " << satirSayisi << "," << sutunSayisi << "\n";
-      return;
-   }
-
-
-
-   //GRID OLUSTURULACAK SONRASINDA ISE LABELLAR YERLESTIRILECEK
-      wxGrid_WordSetIcerik = new wxGrid(this,LEANG_MENU_KELIME_SETLERI_DUZENLEME_GET_DATABASE_TABLE,wxPoint(0,0),wxSize(400,300));
-      wxGrid_WordSetIcerik->CreateGrid(satirSayisi,sutunSayisi);
-   
-
-   
-   int j = 0;
-   for(const auto &i : kolonAdlari){
-      std::cout << "secilen kolon adlari ::: " << i << "\n";
-      if(j == 3){
-         wxGrid_WordSetIcerik->SetColLabelValue(j,"DOGRULAMA_COL");
-         wxGrid_WordSetIcerik->SetColSize(j,600);
-      }
-      else
-      wxGrid_WordSetIcerik->SetColLabelValue(j,i);
-      if(j > 0)
-      wxGrid_WordSetIcerik->SetColSize(j,150);
-      j++;
-   }
-      
-   for(int row = 0 ; row < satirSayisi ; row++){
-      
-      for(int col = 0 ; col < sutunSayisi ; col++){
-         wxGrid_WordSetIcerik->SetCellValue(row,col,vec_table_2D[row][col]);
-      }
-   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
