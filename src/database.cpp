@@ -304,3 +304,51 @@ void database::sendWord(const std::string &dil_1 , const std::string &dil_2,cons
     }
     sqlite3_finalize(stmt);
 }
+
+
+std::string database::getWord(const std::string &kelimeSetiAdi , int id){
+    std::string istenenDilKolon = getTableColumnsLabel(kelimeSetiAdi,2);
+    std::string sqlSorgu = "SELECT "+istenenDilKolon+" WHERE id="+std::to_string(id)+" FROM "+kelimeSetiAdi+";";
+    std::string arananKelime;
+
+    sqlite3_stmt *stmt;
+    sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr);
+
+    if(sqlite3_step(stmt) == SQLITE_OK){
+        const char *arananKelimeCSTR = reinterpret_cast<const char *>(sqlite3_column_text(stmt,0));
+        
+        if(arananKelimeCSTR != nullptr)
+        arananKelime = arananKelimeCSTR;
+
+    }
+    
+    sqlite3_finalize(stmt);
+    return arananKelime;
+}
+
+std::string database::getTableColumnsLabel(const std::string &tablo_adi , int kolon){
+    std::string secondColumnName;
+    std::string sqlSorgu = "PRAGMA table_info(" + tablo_adi+ ");";
+    
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db,sqlSorgu.c_str(),-1,&stmt,nullptr) == SQLITE_OK){
+        int columnCount = 0;
+
+        while (sqlite3_step(stmt) == SQLITE_ROW){
+            columnCount++;
+
+            if (columnCount == kolon){
+            
+                const char *colName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+                secondColumnName = colName ? colName : ""; // Eğer null değilse ismini al
+                break;
+           
+            }
+        }
+    }
+
+    sqlite3_finalize(stmt);
+    return secondColumnName;
+}
+
