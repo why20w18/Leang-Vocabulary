@@ -33,10 +33,14 @@ public:
     void addColumns(const std::string &columnsName);
     
     void sendWord(const std::string &dil_1 , const std::string &dil_2 ,const std::string &col1,const std::string &col2, const std::string &kelimeSetiAdi);
-    void getWord(const std::string &istenenDil , const std::string &kelimeSetiAdi);
+    
+    std::string getWord(const std::string &kelimeSetiAdi , int id);
     int getRecordCount(const std::string &kelimesetiAdi);
     
     void getTableName(const std::string &kullanicininKelimeSetleri);
+    std::string getTableColumnsLabel(const std::string &kullanicininKelimeSetleri , int kolon); //kelime seti adini girince bana tabloda istenen dili getirecek
+
+    
 
     int getUserID(std::string &username);
     std::string& getDatabasePath();
