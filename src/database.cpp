@@ -258,10 +258,16 @@ std::vector<std::vector<std::string>> database::loadGridWordSet(const std::strin
 
         for(int col = 0 ; col < sqlite3_column_count(stmt) ; col++){
             const char *satirVerisi = reinterpret_cast<const char*>(sqlite3_column_text(stmt,col));
+            if(satirVerisi != nullptr)
             vec_satir.push_back(satirVerisi); //eger satir verisi bos ise "" at degilse kendisini gonder
+            else 
+            vec_satir.push_back("");
+        
         }
         vec2D_Tablo.push_back(vec_satir); //vec_satir tum kolonlardaki verileri tutar sonra vec2D_Tablo icine atar
     }
+
+
     sqlite3_finalize(stmt);
 
     return vec2D_Tablo;
