@@ -279,6 +279,9 @@ wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_BUTTON(ID_LEANG_BASLAT_BUTTON,home_frame::slotHomeFrameBaslatButton)
 wxEND_EVENT_TABLE()
 
+
+std::string home_frame::seciliKelimeSetiAdiBaslatici = "";
+
 home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,wxDefaultPosition)
 {  
 
@@ -406,6 +409,11 @@ void home_frame::getWord(const std::string &istenenDil , int istenenRecord ,  in
 int home_frame::randomizeID(const std::string &kelimeSetiAdi){
    database db("../databaseDIR/leang.db");
    int totalRecord = db.getRecordCount(kelimeSetiAdi);
+   if(kelimeSetiAdi == ""){
+      login_frame::errMessage(3,"KELIME SETINI BASLATICIDAN SECIN CTRL+S ILE GIDIN");
+      return 0;
+   }
+   
    if(totalRecord <= 1){
       login_frame::errMessage(3,"KELIME SETINDE YETERI KADAR KELIME YOKTUR !");
       return 0;
@@ -415,7 +423,6 @@ int home_frame::randomizeID(const std::string &kelimeSetiAdi){
    
    //1 <= randomize_id <= totalRecord
    int randomize_id = 1 + rand() % totalRecord; 
-
    return totalRecord;
 }
 ////////////////////////////////////////////////HOME_FRAME_METODLARI///////////////////////////////////////////////////
@@ -468,8 +475,23 @@ void home_frame::logMessage(const std::string &baslik ,const std::string &textr)
 void home_frame::slotHomeFrameBaslatButton(wxCommandEvent &e){
 
    std::cout << "buton tiklandi" << std::endl;
-
    istenenKelime_1->SetLabel("hello");
+   sorulanKelime->SetLabel("");
+
+   database db("../databaseDIR/leang.db");
+
+   int i = 0;
+   while(i < leang_baslatici_kelime_sayisi){
+      int randINT = randomizeID(home_frame::seciliKelimeSetiAdiBaslatici);
+      std::string cekilenKelime = db.getWord(home_frame::seciliKelimeSetiAdiBaslatici,randINT);
+      //if(sonrakiTiklayisiButton)
+      std::cout << "rand int : " << randINT << "\n";
+      std::cout << "cekilen kelime : " << cekilenKelime << "\n";
+      sorulanKelime->SetLabel(cekilenKelime);
+
+      i++;
+   }
+
 }
 
 
@@ -681,10 +703,13 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home)
    this->Bind(wxEVT_CLOSE_WINDOW,&leang_frame::OnSettingsClose,this);
    settings_frame::pencereAcikMi = true;
    
-   if(menuNO == LEANG_MENU_KELIME_TABANI){
-      //SetMaxSize(wxSize(750,600));
+   if(menuNO == LEANG_MENU_KELIME_TABANI ||
+      menuNO == LEANG_MENU_BASLATICI
+      ){
       SetMinSize(wxSize(750,600));
-
+      if(menuNO == LEANG_MENU_BASLATICI)
+      SetMaxSize(wxSize(750,600));
+      
    }
    else{
       SetMaxSize(wxSize(500,250));
@@ -808,9 +833,10 @@ void leang_frame::OnGetTableLF_KT(wxCommandEvent &e){
             login_frame::errMessage(3,"TABLODA VERI YOKTUR YADA TABLODAKI FORMATLARDA PROBLEM VARDIR");
         }
 
+        //butondan sonra yeni grid olusturulacagindan boyutlari tekrar ayarlayacagiz
         wxBoxSizer* sizer = static_cast<wxBoxSizer*>(this->GetSizer());
         sizer->Add(wxGrid_WordSetIcerik, 1, wxALL | wxEXPAND, 5);
-        this->Layout(); // Düzeni yeniden ayarla
+        this->Layout();
 
     } //istisna getirmesi muhtemel kisim ? loadGrid func'ta
 
@@ -827,22 +853,36 @@ void leang_frame::OnGetTableLF_KT(wxCommandEvent &e){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
 void leang_frame::leang_frame_baslatici(){
+   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+
    wxString secenekler[] = {"2","3","4"};
 
-   label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"GOSTERILECEK SECENEK SAYISI : ",wxPoint(10,100),wxDefaultSize);
-   comboBox_leangMenu_1 = new wxComboBox(this,wxID_ANY,"",wxPoint(250,100),wxSize(100,50),3,secenekler,wxCB_READONLY);
+   label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"GOSTERILECEK SECENEK SAYISI : ",wxDefaultPosition,wxDefaultSize);
+   comboBox_leangMenu_1 = new wxComboBox(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,3,secenekler,wxCB_READONLY);
 
-   label_leangMenu_2 = new wxStaticText(this,wxID_ANY,"GOSTERILECEK KELIME SAYISI : ",wxPoint(10,25),wxDefaultSize);
-   textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(250,25),wxSize(50,25));
+   label_leangMenu_2 = new wxStaticText(this,wxID_ANY,"GOSTERILECEK KELIME SAYISI : ",wxDefaultPosition,wxDefaultSize);
+   textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize);
    
    comboBox_leangMenu_1->SetValue("4");
    textCtrl_leangMenu_1->SetValue("0");
 
-   button_leangMenu_1 = new wxButton(this,ID_SaveLeangBaslaticiButton,"KAYDET",wxPoint(370,20),wxSize(100,170));
+   button_leangMenu_1 = new wxButton(this,ID_SaveLeangBaslaticiButton,"KAYDET",wxDefaultPosition,wxDefaultSize);
+
+   listBox_SetIsimleriGUI =  new wxListBox(this, ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet,wxDefaultPosition,wxDefaultSize);
+   button_leangMenu_2 = new wxButton(this,ID_LeangKelimeSetleriDuzenle_SetlerimiGoster,"SETLERIMI LISTELE",wxDefaultPosition,wxDefaultSize);
+
+   sizer->Add(label_leangMenu_1,0,wxALL | wxEXPAND , 10);
+   sizer->Add(comboBox_leangMenu_1,0,wxALL | wxEXPAND , 10);
+   sizer->Add(label_leangMenu_2,0,wxALL | wxEXPAND , 10);
+   sizer->Add(textCtrl_leangMenu_1,0,wxALL | wxEXPAND , 10);
+   sizer->Add(listBox_SetIsimleriGUI,0,wxALL | wxEXPAND , 10);
+   sizer->Add(button_leangMenu_2,1,wxALL | wxEXPAND , 20);
+   sizer->Add(button_leangMenu_1,1,wxALL | wxEXPAND , 20);
+
+
+   this->SetSizer(sizer);
+   this->Layout();
 }
 
 void leang_frame::leang_frame_kelimeSetleri(){
@@ -946,6 +986,7 @@ void leang_frame::OnUserSelectWordSet(wxCommandEvent &e){
 
    if(secilenSetIndex != wxNOT_FOUND){ //eger bir index secildiyse o indexteki stringi getir
       lf_getDatabaseTable->secilenSetIsim = listBox_SetIsimleriGUI->GetString(secilenSetIndex).ToStdString().c_str();
+      home_frame::seciliKelimeSetiAdiBaslatici = secilenSetIsim;
    }
    
    std::cout << "wxListBox Selected Str : "<< secilenSetIsim << " :: Selected Index : " << secilenSetIndex << "\n";
