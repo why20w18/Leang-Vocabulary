@@ -30,9 +30,6 @@ public:
     std::string& getLogUsername();
     std::string& getLogPassword();
 
-//composition implementation //
-//database *db;
-
 
 //STATIC
     //return=1=true,0=false
@@ -90,8 +87,11 @@ public:
     int setEnabledDisabledButton(int activeButtonCount);
 
     //wxMessageBox
-     static void logMessage(const std::string &baslik ,const std::string &textr);
+    static void logMessage(const std::string &baslik ,const std::string &textr);
     std::string olusturucu_username;
+
+    static std::string seciliKelimeSetiAdiBaslatici;
+    
 
 private:
 
