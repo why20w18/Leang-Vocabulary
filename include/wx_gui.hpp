@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <vector>
+
 
 #include <wx-3.2/wx/wx.h>
 #include <wx-3.2/wx/generic/grid.h>
