@@ -746,52 +746,81 @@ void  leang_frame::OnSettingsClose(wxCloseEvent &e){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //leang_frame_kelimeTabani() func
 
-void leang_frame::leang_frame_kelimeTabani(){
-//event button baglandi
+void leang_frame::leang_frame_kelimeTabani() {
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-/*
-+textCtrl lazim tablo adini alacagiz
-+buton lazim
-+buton gridi ekranda baslatacak
-+grid icin ek pencere olmayacak
-*/
+    button_leangMenu_1 = new wxButton(this, ID_BUTTON_GET_TABLE, "SETI GETIR", wxDefaultPosition, wxDefaultSize);
+    button_leangMenu_1->Enable(false);
 
-button_leangMenu_1 = new wxButton(this,ID_BUTTON_GET_TABLE,"SETI GETIR",wxPoint(300,10),wxDefaultSize);
-button_leangMenu_2 = new wxButton(this,ID_LeangKelimeSetleriDuzenle_SetlerimiGoster,"SETI LISTELE",wxPoint(510,10),wxDefaultSize);
-listBox_SetIsimleriGUI = new wxListBox(this,ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet,wxPoint(465,50),wxSize(200,200));
-
-label_leangMenu_1 = new wxStaticText(this,wxID_ANY,"TABLO ADI : ",wxPoint(10,10),wxDefaultSize);
-textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxPoint(100,10),wxSize(180,30));
+    button_leangMenu_2 = new wxButton(this, ID_LeangKelimeSetleriDuzenle_SetlerimiGoster, "SETI LISTELE", wxDefaultPosition, wxDefaultSize);
+    listBox_SetIsimleriGUI = new wxListBox(this, ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet, wxDefaultPosition, wxSize(200, 200));
 
 
+    //2.parametre 0=boyut sabit , 1=sizer alani paylasacak , son parametre borderSize
+    sizer->Add(button_leangMenu_1, 0, wxALL | wxEXPAND, 15);
+    sizer->Add(button_leangMenu_2, 0, wxALL | wxEXPAND, 15);
+    sizer->Add(listBox_SetIsimleriGUI, 0, wxALL | wxEXPAND, 15); 
+    
+    //sizer nesnesini ayarla
+    this->SetSizer(sizer);
+    
+    //sizer ici duzenlemeyi tekrar hesapla
+    this->Layout();
 }
 
+
 void leang_frame::OnGetTableLF_KT(wxCommandEvent &e){
-   std::cout << "ongetTable : " << secilenSetIsim << "\n";
-   wxGrid_WordSetIcerik = new wxGrid(this,LEANG_MENU_KELIME_SETLERI_DUZENLEME_GET_DATABASE_TABLE,wxPoint(0,0),wxSize(400,300));
-   
-   //sutun isimlerini db uzerinden cek
-   database db("../databaseDIR/leang.db");
+    try {
+        std::cout << "ongetTable Button Func : " << secilenSetIsim << "\n";
+        wxGrid_WordSetIcerik = new wxGrid(this, LEANG_MENU_KELIME_SETLERI_DUZENLEME_GET_DATABASE_TABLE, wxDefaultPosition, wxDefaultSize);
 
-   std::vector<std::string> kolonAdlari = db.getColumnsName(secilenSetIsim);
-   
-   std::cout << "secilen tablo adi : " << leang_frame::secilenSetIsim << "\n";
-   std::vector<std::vector<std::string>> vec_table_2D = db.loadGridWordSet(leang_frame::secilenSetIsim); 
-   //TABLOYU OLUSTURACAK VEKTORLER BOS MU
-  
-   
-   //SATIR SUTUN SAYISI KONTROLU
-   int satirSayisi = vec_table_2D.size(); //kelimeSetiGridKayitSayisi;
-   int sutunSayisi = vec_table_2D[0].size();
+        database db("../databaseDIR/leang.db");
 
-   //GRID OLUSTURULACAK SONRASINDA ISE LABELLAR YERLESTIRILECEK
-      wxGrid_WordSetIcerik->CreateGrid(satirSayisi,sutunSayisi);
-      
-   for(int row = 0 ; row < satirSayisi ; row++){
-      for(int col = 0 ; col < sutunSayisi ; col++){
-         wxGrid_WordSetIcerik->SetCellValue(row,col,vec_table_2D[row][col]);
-      }
-   }
+        std::vector<std::string> kolonAdlari = db.getColumnsName(secilenSetIsim);
+        std::cout << "KOLON ADLARI CEKILDI\n";
+
+        std::vector<std::vector<std::string>> vec_table_2D = db.loadGridWordSet(secilenSetIsim);
+        std::cout << "SATIR VERILERI CEKILDI -> CEKILEN SATIR SAYISI : " << vec_table_2D.size() << "\n";
+
+        int satirSayisi = vec_table_2D.size();
+        int sutunSayisi = !vec_table_2D.empty() ? vec_table_2D[0].size() : 0; //tenary assign
+
+        if (satirSayisi > 0 && sutunSayisi > 0){ //satir ve sutun 0'dan buyukse
+            wxGrid_WordSetIcerik->CreateGrid(satirSayisi, sutunSayisi);
+            
+            for (int col = 0; col < sutunSayisi; col++){
+                wxGrid_WordSetIcerik->SetColLabelValue(col, kolonAdlari[col]); //grid kolonlarina labellari ata
+            }
+
+            //databasedeki kelimelerle hucreleri doldurma
+            for (int row = 0; row < satirSayisi; row++){
+                for (int col = 0; col < sutunSayisi; ++col){
+                    wxGrid_WordSetIcerik->SetCellValue(row, col, vec_table_2D[row][col]);
+                }
+            }
+
+            //sutun genisligini oto ayarlama
+            wxGrid_WordSetIcerik->AutoSizeColumns();
+        } 
+        
+        else{
+            std::cout << "TABLODA VERI YOKTUR YADA TABLODAKI FORMATLARDA PROBLEM VARDIR\n";
+            login_frame::errMessage(3,"TABLODA VERI YOKTUR YADA TABLODAKI FORMATLARDA PROBLEM VARDIR");
+        }
+
+        wxBoxSizer* sizer = static_cast<wxBoxSizer*>(this->GetSizer());
+        sizer->Add(wxGrid_WordSetIcerik, 1, wxALL | wxEXPAND, 5);
+        this->Layout(); // Düzeni yeniden ayarla
+
+    } //istisna getirmesi muhtemel kisim ? loadGrid func'ta
+
+    catch(const std::exception& ex){ 
+        std::cerr << "Exception caught: " << ex.what() << "\n";
+    } 
+    
+    catch(...){ //geri kalan tum exceptionlari yakala
+        std::cerr << "Unhandled unknown exception; terminating the application.\n";
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -895,18 +924,6 @@ void leang_frame::OnAddWords(wxCommandEvent &e){
 
 }
 
-
-
-/*
-void leang_frame::OnSetRecordSayisi(wxCommandEvent &e){
-   std::cout << "kayit sayisi alindi : ";
-   std::string maxKayitGosterici = this->textCtrl_leangMenu_1->GetValue().ToStdString();
-   leang_frame::kelimeSetiGridKayitSayisi = std::stoi(maxKayitGosterici);
-   std::cout << kelimeSetiGridKayitSayisi << "\n";
-
-}
-*/
-
 void leang_frame::OnSetiDuzenle(wxCommandEvent &e){
    std::cout << "duzenle buton leang_menu_duzenle\n";
 
@@ -924,6 +941,7 @@ void leang_frame::OnSetiDuzenle(wxCommandEvent &e){
 }
 
 void leang_frame::OnUserSelectWordSet(wxCommandEvent &e){
+   button_leangMenu_1->Enable(true);
    this->secilenSetIndex = listBox_SetIsimleriGUI->GetSelection(); 
 
    if(secilenSetIndex != wxNOT_FOUND){ //eger bir index secildiyse o indexteki stringi getir
