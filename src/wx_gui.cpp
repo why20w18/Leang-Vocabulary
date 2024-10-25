@@ -273,6 +273,8 @@ wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_LEANG_KELIMESETLERI,home_frame::slotLeangKelimeSetleri)
    EVT_MENU(ID_LEANG_KELIMESETLERI_DUZENLE,home_frame::slotLeangKelimeSetleriDuzenleyici)
    EVT_MENU(ID_LEANG_KELIMETABANI,home_frame::slotLeangKelimeTabani)
+   EVT_MENU(ID_LEANG_KULLANICINOTLARI,home_frame::slotLeangKelimeTabani)
+
    
    
   
@@ -546,7 +548,17 @@ void home_frame::slotLeangBaslatici(wxCommandEvent &e){
 
 }
 
-void home_frame::slotLeangKullaniciNotlari(wxCommandEvent &e){}
+void home_frame::slotLeangKullaniciNotlari(wxCommandEvent &e){
+    if(!settings_frame::pencereAcikMi){
+   
+      leang_frame *leang_frame_kullaniciNotlari = new leang_frame("LEANG | Kullanici Notlari",LEANG_MENU_KULLANICI_NOTLARI,this);
+      leang_frame_kullaniciNotlari->Show(true);
+   }
+   
+   else 
+   wxMessageBox("PENCERE ZATEN ACIKTIR","AMAC DISI KULLANIM",wxOK | wxICON_INFORMATION);
+
+}
     
 void home_frame::slotLeangKelimeSetleri(wxCommandEvent &e){
 
