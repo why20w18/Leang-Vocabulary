@@ -230,6 +230,7 @@ enum ID_ENUM_HOME_{
     ID_LEANG_KELIMETABANI,
     ID_LEANG_BASLATICI,
     ID_LEANG_KULLANICINOTLARI,
+    ID_LEANG_KULLANICINOTLARI_KAYDET,
     ID_LEANG_KELIMESETLERI,
     ID_LEANG_KELIMESETLERI_DUZENLE,
     ID_LEANG_EXPORT,
@@ -273,7 +274,7 @@ wxBEGIN_EVENT_TABLE(home_frame,wxFrame)
    EVT_MENU(ID_LEANG_KELIMESETLERI,home_frame::slotLeangKelimeSetleri)
    EVT_MENU(ID_LEANG_KELIMESETLERI_DUZENLE,home_frame::slotLeangKelimeSetleriDuzenleyici)
    EVT_MENU(ID_LEANG_KELIMETABANI,home_frame::slotLeangKelimeTabani)
-   EVT_MENU(ID_LEANG_KULLANICINOTLARI,home_frame::slotLeangKelimeTabani)
+   EVT_MENU(ID_LEANG_KULLANICINOTLARI,home_frame::slotLeangKullaniciNotlari)
 
    
    
@@ -715,10 +716,13 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home)
    this->Bind(wxEVT_CLOSE_WINDOW,&leang_frame::OnSettingsClose,this);
    settings_frame::pencereAcikMi = true;
    
-   if(menuNO == LEANG_MENU_KELIME_TABANI ||
-      menuNO == LEANG_MENU_BASLATICI
+   if(menuNO == LEANG_MENU_KELIME_TABANI     ||
+      menuNO == LEANG_MENU_BASLATICI         ||
+      menuNO == LEANG_MENU_KULLANICI_NOTLARI
+
       ){
       SetMinSize(wxSize(750,600));
+      
       if(menuNO == LEANG_MENU_BASLATICI)
       SetMaxSize(wxSize(750,600));
       
@@ -759,6 +763,11 @@ leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home)
          break;
       }
 
+      case LEANG_MENU_KULLANICI_NOTLARI:{
+         this->leang_frame_kullaniciNotlari();
+         break;
+      }
+
       default:{
          std::cout << "DEFAULT_LEANG_FRAME\n";
          break;
@@ -782,6 +791,24 @@ void  leang_frame::OnSettingsClose(wxCloseEvent &e){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //leang_frame_kelimeTabani() func
+
+void leang_frame::leang_frame_kullaniciNotlari(){
+      wxBoxSizer *sizerVertical = new wxBoxSizer(wxVERTICAL);
+      wxBoxSizer *sizerHorizontal = new wxBoxSizer(wxHORIZONTAL);
+
+      button_leangMenu_1 = new wxButton(this,ID_LEANG_KULLANICINOTLARI_KAYDET,"KAYDET",wxDefaultPosition,wxDefaultSize);
+      textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize);
+      
+      sizerHorizontal->Add(button_leangMenu_1,1,wxALL, 5);
+      sizerHorizontal->Add(textCtrl_leangMenu_1,1,wxALL, 5);
+      sizerVertical->Add(sizerHorizontal,0,wxEXPAND,5);
+      
+      textCtrl_leangMenu_2 = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
+      sizerVertical->Add(textCtrl_leangMenu_2,1,wxEXPAND | wxALL , 15);
+
+      this->SetSizer(sizerVertical);
+      this->Layout();
+}
 
 void leang_frame::leang_frame_kelimeTabani() {
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
