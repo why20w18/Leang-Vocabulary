@@ -693,6 +693,7 @@ wxBEGIN_EVENT_TABLE(leang_frame,wxFrame)
 //   EVT_BUTTON(ID_LeangKelimeSetleriDuzenle_setShownCount,leang_frame::OnSetRecordSayisi)
    EVT_BUTTON(ID_LeangKelimeSetleriDuzenle_addWords,leang_frame::OnAddWords)
    EVT_BUTTON(ID_BUTTON_GET_TABLE,leang_frame::OnGetTableLF_KT)
+   EVT_BUTTON(ID_LEANG_KULLANICINOTLARI_KAYDET,leang_frame::OnKullaniciNotlariSave)
 
    
    EVT_LISTBOX(ID_LeangKelimeSetleriDuzenle_wxListBoxSecilenSet,leang_frame::OnUserSelectWordSet)
@@ -712,6 +713,7 @@ int leang_frame::kelimeSetiGridKayitSayisi = VARSAYILAN_KAYIT_SAYISI;
 leang_frame::leang_frame(const wxString &tittle , int menuNO , home_frame *home) 
 : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition) , home(home)
 {  
+   pathKullaniciNotlari = "../databaseDIR/userNoteDIR/";
 
    this->Bind(wxEVT_CLOSE_WINDOW,&leang_frame::OnSettingsClose,this);
    settings_frame::pencereAcikMi = true;
@@ -796,11 +798,23 @@ void leang_frame::leang_frame_kullaniciNotlari(){
       wxBoxSizer *sizerVertical = new wxBoxSizer(wxVERTICAL);
       wxBoxSizer *sizerHorizontal = new wxBoxSizer(wxHORIZONTAL);
 
+      this->OnKullaniciNotlariSaveGetMevcutDosyalar(); //comboBoxta mevcut dosyalari gostermek icin
+      
+      
+
       button_leangMenu_1 = new wxButton(this,ID_LEANG_KULLANICINOTLARI_KAYDET,"KAYDET",wxDefaultPosition,wxDefaultSize);
       textCtrl_leangMenu_1 = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize);
       
-      sizerHorizontal->Add(button_leangMenu_1,1,wxALL, 5);
+      comboBox_leangMenu_1 = new wxComboBox(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,
+      str_kullaniciNotlariDosyaIsimleri->length()
+      ,str_kullaniciNotlariDosyaIsimleri
+      ,wxCB_READONLY);
+      
+      
+      sizerHorizontal->Add(button_leangMenu_1,0,wxALL, 5);
       sizerHorizontal->Add(textCtrl_leangMenu_1,1,wxALL, 5);
+      sizerHorizontal->Add(comboBox_leangMenu_1,1,wxALL,5);
+
       sizerVertical->Add(sizerHorizontal,0,wxEXPAND,5);
       
       textCtrl_leangMenu_2 = new wxTextCtrl(this,wxID_ANY,"",wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE);
@@ -812,7 +826,7 @@ void leang_frame::leang_frame_kullaniciNotlari(){
 
 void leang_frame::leang_frame_kelimeTabani() {
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-
+   
     button_leangMenu_1 = new wxButton(this, ID_BUTTON_GET_TABLE, "SETI GETIR", wxDefaultPosition, wxDefaultSize);
     button_leangMenu_1->Enable(false);
 
@@ -830,6 +844,40 @@ void leang_frame::leang_frame_kelimeTabani() {
     
     //sizer ici duzenlemeyi tekrar hesapla
     this->Layout();
+}
+
+
+
+void leang_frame::OnKullaniciNotlariSave(wxCommandEvent &e){
+   std::cout << "OnKullaniciNotlariSave Button Func\n";
+
+   //MEVCUT DOSYA ADLARINI VEKTORDE TUTMA
+
+   //COMBOBOX BASLATMA
+
+   if(this->textCtrl_leangMenu_1->IsEmpty()){
+      home_frame::logMessage("GECERSIZ DOSYA ADI !","LUTFEN KAYDET BUTONUNUN YANINDAKI ALANA SADECE DOSYA\n\
+            ADINIZI GIRIN ORNEGIN 'ilkNot' , UZANTI EKLEMEYINIZ");
+            return;
+   }
+
+   std::string dosyaAdi = textCtrl_leangMenu_1->GetValue().ToStdString();
+   std::cout <<  dosyaAdi << "\n";
+   
+   
+   
+   
+}
+
+void leang_frame::OnKullaniciNotlariSaveGetMevcutDosyalar(){
+   std::cout << "DIZINDEKI MEVCUT DOSYALARIN ISIMLERI : \n";
+   std::string dosyaAdlari("");
+   int i = 0;
+   for(const auto &file : fs::directory_iterator(this->pathKullaniciNotlari)){    //path.string          ==> yazilan pathide dahil eder icerir
+      dosyaAdlari = file.path().filename().string();
+      std::cout << dosyaAdlari << "\n"; //path.filename.string ==> sadece dosya adi
+      str_kullaniciNotlariDosyaIsimleri[i] = dosyaAdlari;
+   }
 }
 
 
