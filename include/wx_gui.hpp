@@ -267,6 +267,7 @@ public:
     void leang_frame_kelimeSetleriDuzenleyici();
     void leang_frame_kelimeSetleriDuzenleyici_setDuzenle(bool pencereAc = true);
     void leang_frame_kelimeTabani();
+    void leang_frame_kullaniciNotlari();
 
 private:
     //CTRL+E
