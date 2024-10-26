@@ -6,6 +6,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 
 #include <wx-3.2/wx/wx.h>
@@ -16,6 +17,9 @@
 
 #define VARSAYILAN_KAYIT_SAYISI 50
 #define _STATIC_MEMBER_
+
+
+namespace fs = std::filesystem;
 
 class home_frame;
 ///////////////////////////////////////////////LOGIN_FRAME_CLASS//////////////////////////////////////////////////
@@ -268,12 +272,15 @@ public:
     void leang_frame_kelimeSetleriDuzenleyici_setDuzenle(bool pencereAc = true);
     void leang_frame_kelimeTabani();
     void leang_frame_kullaniciNotlari();
+    void OnKullaniciNotlariSaveGetMevcutDosyalar();
 
 private:
     //CTRL+E
     int mem_gosterilecekKelimeSayisi;
     int secilenSetIndex;
     static std::string secilenSetIsim;
+    std::string pathKullaniciNotlari;
+    wxString str_kullaniciNotlariDosyaIsimleri[100];
     
     std::string addWords_sutun2;
     std::string addWords_sutun3;
@@ -317,8 +324,8 @@ private:
     void OnSetiDuzenle(wxCommandEvent &e);
     //void OnSetRecordSayisi(wxCommandEvent &e);
     void OnAddWords(wxCommandEvent &e);
-
     void OnGetTableLF_KT(wxCommandEvent &e);
+    void OnKullaniciNotlariSave(wxCommandEvent &e);
 
 
     wxDECLARE_EVENT_TABLE();
