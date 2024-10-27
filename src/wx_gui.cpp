@@ -298,6 +298,7 @@ wxEND_EVENT_TABLE()
 std::string home_frame::seciliKelimeSetiAdiBaslatici = "";
 
 home_frame::~home_frame(){
+   //KONTROL YAPISI EKLENMELIDIR
    delete menuBarHome;
    delete menuSettings; 
    delete menuSupport; 
