@@ -29,8 +29,7 @@ class home_frame;
 class login_frame : public wxFrame{
 public:
     login_frame(const wxString &tittle);
-    //~login_frame();
-    
+    ~login_frame();
     std::string& getLogUsername();
     std::string& getLogPassword();
 
@@ -61,6 +60,10 @@ private:
     //gui elemanlari
     wxTextCtrl *userName;
     wxTextCtrl *userPassword;
+    wxPanel *panel;
+    wxStaticText *label_username;
+    wxStaticText *label_pass;
+    wxStaticText *leangVersionLabel;
 
 
     wxButton *buttonGiris;
@@ -73,7 +76,7 @@ private:
     void OnLoginSumbitButton(wxCommandEvent &e); //login sumbit button
     void OnRegisterSumbitButton(wxCommandEvent &e); //register sumbit button
     
-    home_frame *mainMenu;
+    home_frame *mainMenu;   //PROGRAMIN KAPATILMASINI YAKALAYINCA SIL---------------------------
 
     //makrolar isin icine buton girince event table
     wxDECLARE_EVENT_TABLE();
@@ -88,6 +91,7 @@ class home_frame : public wxFrame , public leangEngine{
 public:
     //constructor ve wxframeden turedigi icin o classinda constructorini baslatma
     home_frame(const wxString &yeniPencere_Baslik);
+    ~home_frame();
     int setEnabledDisabledButton(int activeButtonCount);
 
     //wxMessageBox
