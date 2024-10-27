@@ -37,6 +37,18 @@ wxBEGIN_EVENT_TABLE(login_frame,wxFrame)
    
 wxEND_EVENT_TABLE()
 
+ login_frame::~login_frame(){
+    delete userName;
+    delete userPassword;
+    delete buttonGiris;
+    delete buttonRegister;
+    delete leangVersionLabel;
+    delete label_pass;
+    delete label_username;
+    delete panel;
+}
+
+
 
 login_frame::login_frame(const wxString &tittle) 
 : wxFrame(nullptr,wxID_ANY,tittle,wxDefaultPosition)
@@ -58,17 +70,17 @@ login_frame::login_frame(const wxString &tittle)
 
 
 //GUI ISLEMLERI
-   wxPanel *panel = new wxPanel(this,wxID_ANY);
+   panel = new wxPanel(this,wxID_ANY);
    //LOGIN KISMI
    //-->label(wxstatictext)
    //-->textctrl
 
-   wxStaticText *label_username = new wxStaticText(panel,wxID_ANY,"KULLANICI ADI:",wxPoint(18,85));
+   label_username = new wxStaticText(panel,wxID_ANY,"KULLANICI ADI:",wxPoint(18,85));
    userName = new wxTextCtrl(panel,wxID_ANY,"",wxPoint(135,75),wxSize(200,40));
    //genislik = 134...311 = 177
    //yukseklik = 112..72  = 40
 
-   wxStaticText *label_pass = new wxStaticText(panel,wxID_ANY,"PAROLA :",wxPoint(18,183));
+   label_pass = new wxStaticText(panel,wxID_ANY,"PAROLA :",wxPoint(18,183));
    userPassword = new wxTextCtrl(panel,wxID_ANY,"",wxPoint(135,175),wxSize(200,40),wxTE_PASSWORD);
 
 
@@ -80,7 +92,7 @@ login_frame::login_frame(const wxString &tittle)
 
    buttonRegister = new wxButton(panel,ID_RegisterSumbit,"Register",wxPoint(146,320),wxSize(80,25));
 
-   wxStaticText *leangVersionLabel = new wxStaticText(panel,wxID_ANY,"Leang Version : "+this->leangVersion,wxPoint(130,370));   
+   leangVersionLabel = new wxStaticText(panel,wxID_ANY,"Leang Version : "+this->leangVersion,wxPoint(130,370));   
 }
 
 /////////////////////////////////////////////////////////LOGIN_FRAME_SLOT_FONKSIYONLARI////////////////////////////////////
@@ -284,6 +296,21 @@ wxEND_EVENT_TABLE()
 
 
 std::string home_frame::seciliKelimeSetiAdiBaslatici = "";
+
+home_frame::~home_frame(){
+   delete menuBarHome;
+   delete menuSettings; 
+   delete menuSupport; 
+   delete menuLeang;   
+   delete leang_baslat;
+   delete leang_durdur;
+   delete sorulanKelime;
+   delete istenenKelime_1;
+   delete istenenKelime_2;
+   delete istenenKelime_3;
+   delete istenenKelime_4;
+}
+
 
 home_frame::home_frame(const wxString &title) : wxFrame(nullptr,wxID_ANY,title,wxDefaultPosition)
 {  
